@@ -3,11 +3,11 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "hardhat/console.sol";
 
 contract BusinessCard is ERC1155 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
-    Counters.Counter private _randNonce;
     string public name = "Non Fungible Business Card";
     struct CardMeta {
         address author;
@@ -23,7 +23,7 @@ contract BusinessCard is ERC1155 {
     }
 
     mapping(uint256 => CardMeta) private cardMetaMap;
-    mapping(uint32 => TicketMeta) tickets;
+    mapping(string => TicketMeta) private tickets;
 
     constructor() ERC1155("") {}
 
@@ -34,15 +34,14 @@ contract BusinessCard is ERC1155 {
         uint256 _amount
     ) public {
         _tokenIds.increment();
-
         uint256 newItemId = _tokenIds.current();
-        _mint(msg.sender, newItemId, _amount, "");
         cardMetaMap[newItemId] = CardMeta(
             msg.sender,
             _uri,
             _isTransferable,
             _isEditable
         );
+        _mint(msg.sender, newItemId, _amount, "");
     }
 
     function edit(uint256 _id, string memory _uri) public {
@@ -52,32 +51,28 @@ contract BusinessCard is ERC1155 {
         cardMeta.uri = _uri;
     }
 
+    function ticket(string memory _ticket)
+        public
+        view
+        returns (TicketMeta memory)
+    {
+        return tickets[_ticket];
+    }
+
     function issueTicket(
         uint256 _id,
+        string memory _ticket,
         uint256 _effectiveDate,
         uint64 _amount,
         bool _infinite
-    ) public returns (uint32) {
+    ) public {
         require(msg.sender == cardMetaMap[_id].author, "It's not your card.");
-        _randNonce.increment();
-        uint32 ticket = uint32(
-            uint256(
-                keccak256(
-                    abi.encodePacked(
-                        msg.sender,
-                        block.timestamp,
-                        _randNonce.current()
-                    )
-                )
-            ) % (2**32)
-        );
+        require(tickets[_ticket].tokenId == 0);
         uint256 effectiveAt = _effectiveDate * 1 days;
-        tickets[ticket] = TicketMeta(_id, effectiveAt, _amount, _infinite);
-
-        return ticket;
+        tickets[_ticket] = TicketMeta(_id, effectiveAt, _amount, _infinite);
     }
 
-    function receiveCard(uint32 _ticket) public {
+    function receiveCard(string memory _ticket) public {
         TicketMeta storage ticketMeta = tickets[_ticket];
         require(ticketMeta.tokenId != 0, "Ticket does not exist.");
         require(
@@ -102,7 +97,7 @@ contract BusinessCard is ERC1155 {
         );
     }
 
-    function burnTicket(uint32 _ticket) public {
+    function burnTicket(string memory _ticket) public {
         TicketMeta storage ticketMeta = tickets[_ticket];
         CardMeta memory cardMeta = cardMetaMap[ticketMeta.tokenId];
         require(ticketMeta.tokenId != 0, "Ticket does not exist.");
@@ -123,8 +118,11 @@ contract BusinessCard is ERC1155 {
         bytes memory
     ) internal view override {
         for (uint256 i = 0; i < _ids.length; i++) {
-            uint256 tokenId = _ids[i];
-            require(cardMetaMap[tokenId].isTransferable, "non-transferable");
+            CardMeta memory cardMeta = cardMetaMap[_ids[i]];
+            require(
+                cardMeta.isTransferable || cardMeta.author == msg.sender,
+                "non-transferable"
+            );
         }
     }
 }
