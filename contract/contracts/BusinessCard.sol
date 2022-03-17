@@ -28,37 +28,37 @@ contract BusinessCard is ERC1155 {
     constructor() ERC1155("") {}
 
     function print(
-        string memory uri,
-        bool isTransferable,
-        bool isEditable,
-        uint256 amount
+        string memory _uri,
+        bool _isTransferable,
+        bool _isEditable,
+        uint256 _amount
     ) public {
         _tokenIds.increment();
 
         uint256 newItemId = _tokenIds.current();
-        _mint(msg.sender, newItemId, amount, "");
+        _mint(msg.sender, newItemId, _amount, "");
         cardMetaMap[newItemId] = CardMeta(
             msg.sender,
-            uri,
-            isTransferable,
-            isEditable
+            _uri,
+            _isTransferable,
+            _isEditable
         );
     }
 
-    function edit(uint256 id, string memory uri) public {
-        CardMeta storage cardMeta = cardMetaMap[id];
+    function edit(uint256 _id, string memory _uri) public {
+        CardMeta storage cardMeta = cardMetaMap[_id];
         require(cardMeta.author == msg.sender, "It's not your card.");
         require(cardMeta.isEditable, "uneditable");
-        cardMeta.uri = uri;
+        cardMeta.uri = _uri;
     }
 
     function issueTicket(
-        uint256 id,
-        uint256 effectiveDate,
-        uint64 amount,
-        bool infinite
+        uint256 _id,
+        uint256 _effectiveDate,
+        uint64 _amount,
+        bool _infinite
     ) public returns (uint32) {
-        require(msg.sender == cardMetaMap[id].author, "It's not your card.");
+        require(msg.sender == cardMetaMap[_id].author, "It's not your card.");
         _randNonce.increment();
         uint32 ticket = uint32(
             uint256(
@@ -71,14 +71,14 @@ contract BusinessCard is ERC1155 {
                 )
             ) % (2**32)
         );
-        uint256 effectiveAt = effectiveDate * 1 days;
-        tickets[ticket] = TicketMeta(id, effectiveAt, amount, infinite);
+        uint256 effectiveAt = _effectiveDate * 1 days;
+        tickets[ticket] = TicketMeta(_id, effectiveAt, _amount, _infinite);
 
         return ticket;
     }
 
-    function receiveCard(uint32 ticket) public {
-        TicketMeta storage ticketMeta = tickets[ticket];
+    function receiveCard(uint32 _ticket) public {
+        TicketMeta storage ticketMeta = tickets[_ticket];
         require(ticketMeta.tokenId != 0, "Ticket does not exist.");
         require(
             ticketMeta.amount > 0 || ticketMeta.infinite,
@@ -102,28 +102,28 @@ contract BusinessCard is ERC1155 {
         );
     }
 
-    function burnTicket(uint32 ticket) public {
-        TicketMeta storage ticketMeta = tickets[ticket];
+    function burnTicket(uint32 _ticket) public {
+        TicketMeta storage ticketMeta = tickets[_ticket];
         CardMeta memory cardMeta = cardMetaMap[ticketMeta.tokenId];
         require(ticketMeta.tokenId != 0, "Ticket does not exist.");
         require(cardMeta.author == msg.sender, "It's not your ticket.");
         ticketMeta.tokenId = 0;
     }
 
-    function uri(uint256 id) public view override returns (string memory) {
-        return cardMetaMap[id].uri;
+    function uri(uint256 _id) public view override returns (string memory) {
+        return cardMetaMap[_id].uri;
     }
 
     function _beforeTokenTransfer(
         address,
         address,
         address,
-        uint256[] memory ids,
+        uint256[] memory _ids,
         uint256[] memory,
         bytes memory
     ) internal view override {
-        for (uint256 i = 0; i < ids.length; i++) {
-            uint256 tokenId = ids[i];
+        for (uint256 i = 0; i < _ids.length; i++) {
+            uint256 tokenId = _ids[i];
             require(cardMetaMap[tokenId].isTransferable, "non-transferable");
         }
     }
