@@ -24,6 +24,7 @@ contract BusinessCard is ERC1155 {
 
     mapping(uint256 => CardMeta) private cardMetaMap;
     mapping(string => TicketMeta) private tickets;
+    mapping(string => mapping(address => bool)) ticketUsageHistory;
 
     constructor() ERC1155("") {}
 
@@ -47,7 +48,7 @@ contract BusinessCard is ERC1155 {
     function edit(uint256 _id, string memory _uri) public {
         CardMeta storage cardMeta = cardMetaMap[_id];
         require(cardMeta.author == msg.sender, "It's not your card.");
-        require(cardMeta.isEditable, "uneditable");
+        require(cardMeta.isEditable, "Editing is not permitted.");
         cardMeta.uri = _uri;
     }
 
@@ -67,8 +68,7 @@ contract BusinessCard is ERC1155 {
         bool _infinite
     ) public {
         require(msg.sender == cardMetaMap[_id].author, "It's not your card.");
-        require(tickets[_ticket].tokenId == 0);
-        uint256 effectiveAt = _effectiveDate * 1 days;
+        uint256 effectiveAt = block.timestamp + _effectiveDate * 1 days;
         tickets[_ticket] = TicketMeta(_id, effectiveAt, _amount, _infinite);
     }
 
@@ -83,11 +83,16 @@ contract BusinessCard is ERC1155 {
             ticketMeta.effectiveAt > block.timestamp,
             "expiration of a term"
         );
+        require(
+            !ticketUsageHistory[_ticket][msg.sender],
+            "You have already received it."
+        );
         if (!ticketMeta.infinite) {
             ticketMeta.amount--;
         }
 
         CardMeta memory cardMeta = cardMetaMap[ticketMeta.tokenId];
+        ticketUsageHistory[_ticket][msg.sender] = true;
         _safeTransferFrom(
             cardMeta.author,
             msg.sender,
@@ -111,7 +116,7 @@ contract BusinessCard is ERC1155 {
 
     function _beforeTokenTransfer(
         address,
-        address,
+        address from,
         address,
         uint256[] memory _ids,
         uint256[] memory,
@@ -120,7 +125,9 @@ contract BusinessCard is ERC1155 {
         for (uint256 i = 0; i < _ids.length; i++) {
             CardMeta memory cardMeta = cardMetaMap[_ids[i]];
             require(
-                cardMeta.isTransferable || cardMeta.author == msg.sender,
+                cardMeta.isTransferable ||
+                    cardMeta.author == msg.sender ||
+                    cardMeta.author == from,
                 "non-transferable"
             );
         }
