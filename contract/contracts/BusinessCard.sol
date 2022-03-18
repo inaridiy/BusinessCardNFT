@@ -68,6 +68,7 @@ contract BusinessCard is ERC1155 {
         bool _infinite
     ) public {
         require(msg.sender == cardMetaMap[_id].author, "It's not your card.");
+        require(tickets[_ticket].tokenId == 0, "Tickets that already exist.");
         uint256 effectiveAt = block.timestamp + _effectiveDate * 1 days;
         tickets[_ticket] = TicketMeta(_id, effectiveAt, _amount, _infinite);
     }
@@ -77,11 +78,11 @@ contract BusinessCard is ERC1155 {
         require(ticketMeta.tokenId != 0, "Ticket does not exist.");
         require(
             ticketMeta.amount > 0 || ticketMeta.infinite,
-            "Ticket not available"
+            "Ticket not available."
         );
         require(
             ticketMeta.effectiveAt > block.timestamp,
-            "expiration of a term"
+            "Ticket has expired."
         );
         require(
             !ticketUsageHistory[_ticket][msg.sender],
@@ -107,7 +108,7 @@ contract BusinessCard is ERC1155 {
         CardMeta memory cardMeta = cardMetaMap[ticketMeta.tokenId];
         require(ticketMeta.tokenId != 0, "Ticket does not exist.");
         require(cardMeta.author == msg.sender, "It's not your ticket.");
-        ticketMeta.tokenId = 0;
+        delete tickets[_ticket];
     }
 
     function uri(uint256 _id) public view override returns (string memory) {
