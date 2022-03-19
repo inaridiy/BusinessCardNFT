@@ -105,4 +105,16 @@ export const chainParameters = {
     },
     rpcUrls: ["https://rpc-mumbai.maticvigil.com/"],
   },
+  "0x51": {
+    chainId: "0x51",
+    blockExplorerUrls: ["https://shibuya.subscan.io"],
+    chainName: "Shibuya Network",
+    iconUrls: [],
+    nativeCurrency: {
+      decimals: 18,
+      name: "SBY",
+      symbol: "SBY",
+    },
+    rpcUrls: ["https://rpc.shibuya.astar.network:8545"],
+  },
 };
