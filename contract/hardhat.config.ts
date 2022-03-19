@@ -1,3 +1,7 @@
+import {
+  EVM_VERSION,
+  SOLIDITY_VERSION,
+} from "@ericxstone/hardhat-blockscout-verify";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
@@ -33,6 +37,16 @@ const config: HardhatUserConfig = {
       url: "https://rpc-mumbai.maticvigil.com",
       accounts: ["0x" + process.env.PRIVATE_KEY],
     },
+    shibuya: {
+      url: "https://rpc.shibuya.astar.network:8545",
+      chainId: 81,
+      accounts: ["0x" + process.env.PRIVATE_KEY],
+    },
+    astar: {
+      url: "https://rpc.astar.network:8545",
+      chainId: 592,
+      accounts: ["0x" + process.env.PRIVATE_KEY],
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
@@ -40,6 +54,17 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: process.env.POLYGONSCAN_API_KEY,
+  },
+  blockscoutVerify: {
+    blockscoutURL: "https://blockscout.com/astar/",
+    contracts: {
+      BusinessCard: {
+        compilerVersion: SOLIDITY_VERSION.SOLIDITY_V_8_4, // checkout enum SOLIDITY_VERSION
+        optimization: true,
+        evmVersion: EVM_VERSION.EVM_HOMESTEAD, // checkout enum SOLIDITY_VERSION
+        optimizationRuns: 200,
+      },
+    },
   },
 };
 

@@ -6,7 +6,7 @@ async function main() {
 
   await businessCard.deployed();
 
-  console.log("Greeter deployed to:", businessCard.address);
+  console.log("BusinessCard deployed to:", businessCard.address);
 }
 
 main().catch((error) => {

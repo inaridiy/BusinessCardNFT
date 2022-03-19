@@ -58,6 +58,13 @@
   resolved "https://registry.yarnpkg.com/@ensdomains/resolver/-/resolver-0.2.4.tgz#c10fe28bf5efbf49bff4666d909aed0265efbc89"
   integrity sha512-bvaTH34PMCbv6anRa9I/0zjLJgY4EuznbEMgbV77JBCQ9KNC46rzi0avuxpOfu+xDjPEtSFGqVEOr5GlUSGudA==
 
+"@ericxstone/hardhat-blockscout-verify@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@ericxstone/hardhat-blockscout-verify/-/hardhat-blockscout-verify-1.0.0.tgz#e9d845765dc37f775cd36d95182c46cc4233ebf7"
+  integrity sha512-YGErQnwWhpznamKpf5XjzNPhcxZIi+cKUnYSEj63UQsPjYcg1/0FY/b4dPJGkoE+7bXTJrfNiR5DEMxiYh1pIw==
+  dependencies:
+    node-fetch "2.0.0"
+
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.4.3.tgz#9e42981ef035beb3dd49add17acb96e8ff6f394c"
@@ -6885,6 +6892,11 @@ node-environment-flags@1.0.6:
   dependencies:
     object.getownpropertydescriptors "^2.0.3"
     semver "^5.7.0"
+
+node-fetch@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.0.0.tgz#982bba43ecd4f2922a29cc186a6bbb0bb73fcba6"
+  integrity sha1-mCu6Q+zU8pIqKcwYamu7C7c/y6Y=
 
 node-fetch@2.6.1:
   version "2.6.1"
