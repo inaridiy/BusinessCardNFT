@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BsGithub, BsTwitter } from "react-icons/bs";
@@ -81,93 +82,96 @@ const Card: NextPage = () => {
     };
   }, []);
   return (
-    <div
-      data-theme={dataTheme}
-      className="h-full flex justify-center items-center bg-base-200 text-base-content p-4 overflow-hidden"
-      style={{ perspective: "1500px" }}
-      onClick={() => setIsFlip(!isFlip)}
-    >
+    <>
+      <NextSeo title={`${String(query.n)}'s Name Card`} />
       <div
-        className="w-96 artboard phone-1"
-        style={{
-          transform: `rotateY(${x * 10}deg) rotateX(${
-            y * -10
-          }deg) translate3D(${x * 5}%,${y * 5}%,0)`,
-          perspective: "600px",
-        }}
+        data-theme={dataTheme}
+        className="h-full flex justify-center items-center bg-base-200 text-base-content p-4 overflow-hidden"
+        style={{ perspective: "1500px" }}
+        onClick={() => setIsFlip(!isFlip)}
       >
         <div
-          className="card bg-base-100 shadow-2xl h-full transition-all duration-500"
+          className="w-96 artboard phone-1"
           style={{
-            transform: `rotateY(${isFlip ? "180deg" : "0"})`,
-            backfaceVisibility: "hidden",
+            transform: `rotateY(${x * 10}deg) rotateX(${
+              y * -10
+            }deg) translate3D(${x * 5}%,${y * 5}%,0)`,
+            perspective: "600px",
           }}
         >
-          <figure>
-            <img
-              className="h-48 bg-primary mask mask-hexagon mt-4 aspect-square object-cover"
-              src={String(query.i)}
-              alt="Profile Icon"
-            />
-          </figure>
-          <div className="card-body">
-            <h2 className="card-title text-4xl">{String(query.n)}</h2>
-            <p>{String(query.s || "")}</p>
-
-            <div className="card-actions justify-end items-center gap-0">
-              <a
-                href={twitter}
-                onClick={stopPropagation}
-                className="btn btn-square btn-ghost"
-              >
-                <BsTwitter size="2rem" />
-              </a>
-              <a
-                href={github}
-                onClick={stopPropagation}
-                className="btn btn-square btn-ghost"
-              >
-                <BsGithub size="2rem" />
-              </a>
-              <a
-                className="btn btn-square btn-ghost"
-                href={cyberConnect}
-                onClick={stopPropagation}
-              >
-                <CyberConnectIcon />
-              </a>
-            </div>
-          </div>
-        </div>
-        <div
-          className="absolute top-0 h-full w-full card shadow-2xl transition-all duration-500 bg-neutral text-neutral-content"
-          style={{
-            transform: `rotateY(${isFlip ? "0" : "-180deg"})`,
-            backfaceVisibility: "hidden",
-          }}
-        >
-          <div className="flex-col justify-center items-center p-4">
+          <div
+            className="card bg-base-100 shadow-2xl h-full transition-all duration-500"
+            style={{
+              transform: `rotateY(${isFlip ? "180deg" : "0"})`,
+              backfaceVisibility: "hidden",
+            }}
+          >
             <figure>
               <img
-                className="h-32 bg-secondary mask mask-hexagon aspect-square object-cover"
+                className="h-48 bg-primary mask mask-hexagon mt-4 aspect-square object-cover"
                 src={String(query.i)}
-                alt="Collection"
+                alt="Profile Icon"
               />
             </figure>
-            <p className="text-center text-2xl font-bold">
-              {`${String(query.n)}'s  Collection`}
-            </p>
-            <div className="w-full h-0.5 bg-neutral-content my-4"></div>
-            <h2 className="text-3xl font-bold">POAPs</h2>
-            <div className="flex flex-wrap gap-2">
-              {poaps.map((poap) => (
-                <PoapView poap={poap} key={poap.tokenId} />
-              ))}
+            <div className="card-body">
+              <h2 className="card-title text-4xl">{String(query.n)}</h2>
+              <p>{String(query.s || "")}</p>
+
+              <div className="card-actions justify-end items-center gap-0">
+                <a
+                  href={twitter}
+                  onClick={stopPropagation}
+                  className="btn btn-square btn-ghost"
+                >
+                  <BsTwitter size="2rem" />
+                </a>
+                <a
+                  href={github}
+                  onClick={stopPropagation}
+                  className="btn btn-square btn-ghost"
+                >
+                  <BsGithub size="2rem" />
+                </a>
+                <a
+                  className="btn btn-square btn-ghost"
+                  href={cyberConnect}
+                  onClick={stopPropagation}
+                >
+                  <CyberConnectIcon />
+                </a>
+              </div>
+            </div>
+          </div>
+          <div
+            className="absolute top-0 h-full w-full card shadow-2xl transition-all duration-500 bg-neutral text-neutral-content"
+            style={{
+              transform: `rotateY(${isFlip ? "0" : "-180deg"})`,
+              backfaceVisibility: "hidden",
+            }}
+          >
+            <div className="flex-col justify-center items-center p-4">
+              <figure>
+                <img
+                  className="h-32 bg-secondary mask mask-hexagon aspect-square object-cover"
+                  src={String(query.i)}
+                  alt="Collection"
+                />
+              </figure>
+              <p className="text-center text-2xl font-bold">
+                {`${String(query.n)}'s  Collection`}
+              </p>
+              <div className="w-full h-0.5 bg-neutral-content my-4"></div>
+              <h2 className="text-3xl font-bold">POAPs</h2>
+              <div className="flex flex-wrap gap-2">
+                {poaps.map((poap) => (
+                  <PoapView poap={poap} key={poap.tokenId} />
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
