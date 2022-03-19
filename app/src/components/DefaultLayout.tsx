@@ -1,18 +1,19 @@
+import { useTheme } from "next-themes";
 import NextLink from "next/link";
 import React from "react";
-import { BsGear, BsGithub, BsTwitter } from "react-icons/bs";
+import { BsGear, BsGithub, BsMoon, BsSun, BsTwitter } from "react-icons/bs";
 
 export default function DefaultLayout({
   children,
-  theme = "dark",
 }: {
   children: React.ReactNode;
   theme?: string;
 }) {
+  const { theme } = useTheme() as { theme: string };
   return (
     <div
-      className="min-h-full flex flex-col relative bg-base-100"
-      data-theme={theme}
+      className="min-h-full flex flex-col relative bg-base-100 transition-all"
+      data-theme={theme === "dark" ? "dark" : "light"}
     >
       <Header />
       <div className="mx-auto container mt-16 text-base-content">
@@ -23,27 +24,39 @@ export default function DefaultLayout({
   );
 }
 
-export const Header: React.FC = () => (
-  <nav className="navbar fixed">
-    <NextLink href="/">
-      <a className="btn btn-ghost text-base-content normal-case text-2xl">
-        Web3Adv
-      </a>
-    </NextLink>
-  </nav>
-);
+export const Header: React.FC = () => {
+  const { theme, setTheme } = useTheme() as {
+    theme: string;
+    setTheme: (s: string) => void;
+  };
+  const toggle = () => setTheme(theme === "dark" ? "light" : "dark");
+  return (
+    <nav className="navbar fixed flex justify-between">
+      <NextLink href="/">
+        <a className="btn btn-ghost text-base-content normal-case text-2xl">
+          NF Business Card
+        </a>
+      </NextLink>
+      <div className="flex-none">
+        <button className="btn btn-square btn-ghost" onClick={toggle}>
+          {theme === "dark" ? <BsMoon size="2rem" /> : <BsSun size="2rem" />}
+        </button>
+      </div>
+    </nav>
+  );
+};
 
 export const Footer: React.FC = () => (
   <footer className="footer items-center p-4 bg-neutral text-neutral-content mt-auto">
     <div className="items-center grid-flow-col">
       <BsGear size="36" className="animation-spin2" />
-      <p>Web3Adv © 2022 - All right reserved</p>
+      <p> NF Business Card © 2022 - All right reserved</p>
     </div>
     <div className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
       <a href="https://twitter.com/unknown_gakusei">
         <BsTwitter size="1.5rem" />
       </a>
-      <a href="https://github.com/inaridiy">
+      <a href="https://github.com/inaridiy/BusinessCardNFT">
         <BsGithub size="1.5rem" />
       </a>
       <a href="https://app.cyberconnect.me/address/inaridiy.eth">
