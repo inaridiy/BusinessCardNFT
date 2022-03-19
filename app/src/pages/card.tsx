@@ -1,14 +1,60 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsGithub, BsTwitter } from "react-icons/bs";
+
+export interface Poap {
+  event: Event;
+  tokenId: string;
+  owner: string;
+  chain: string;
+  created: Date;
+}
+
+export interface Event {
+  id: number;
+  fancy_id: string;
+  name: string;
+  event_url: string;
+  image_url: string;
+  country: string;
+  city: string;
+  description: string;
+  year: number;
+  start_date: string;
+  end_date: string;
+  expiry_date: string;
+  supply: number;
+}
+
+const stopPropagation = (e: React.MouseEvent<HTMLElement>) =>
+  e.stopPropagation();
 
 const Card: NextPage = () => {
   const { query } = useRouter();
   const [isFlip, setIsFlip] = useState(false);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
+  const [poaps, setPoaps] = useState<Poap[]>([]);
   const dataTheme = String(query.theme) || "lofi";
+  const twitter = `https://twitter.com/${String(query.t).replace(/^@/, "")}`;
+  const github = `https://github.com/${String(query.g)}`;
+  const cyberConnect = `https://app.cyberconnect.me/address/${String(query.a)}`;
+
+  const fetchPoap = async () => {
+    const res = await fetch(
+      `https://api.poap.xyz/actions/scan/${String(query.a)}`
+    );
+    const json = (await res.json()) as Poap[] | unknown;
+    const _poaps = Array.isArray(json) ? json : ([] as Poap[]);
+    setPoaps(_poaps);
+  };
+
+  useEffect(() => {
+    if (query.a) {
+      void fetchPoap();
+    }
+  }, [query]);
 
   useEffect(() => {
     const mouseListener = (e: MouseEvent) => {
@@ -59,37 +105,108 @@ const Card: NextPage = () => {
         >
           <figure>
             <img
-              className="h-48 bg-primary mask mask-hexagon mt-4"
-              src="https://lh3.googleusercontent.com/nq68MZh2ZssfDMCvGL-iyx-3a4kXmU8jmtBO0vWgYAsPNiHxxWmoONT4dalD9cIAig_CxDMkvueN5GpDh2btDZkgTGZufONV8CJwzGk=w600"
-              alt="Shoes"
+              className="h-48 bg-primary mask mask-hexagon mt-4 aspect-square object-cover"
+              src={String(query.i)}
+              alt="Profile Icon"
             />
           </figure>
           <div className="card-body">
-            <h2 className="card-title text-4xl">Inaridiy.eth</h2>
-            <p>If a dog chews shoes whose shoes does he choose?</p>
+            <h2 className="card-title text-4xl">{String(query.n)}</h2>
+            <p>{String(query.s || "")}</p>
 
-            <div className="card-actions justify-end items-center">
-              <a>
+            <div className="card-actions justify-end items-center gap-0">
+              <a
+                href={twitter}
+                onClick={stopPropagation}
+                className="btn btn-square btn-ghost"
+              >
                 <BsTwitter size="2rem" />
               </a>
-              <a>
+              <a
+                href={github}
+                onClick={stopPropagation}
+                className="btn btn-square btn-ghost"
+              >
                 <BsGithub size="2rem" />
               </a>
-              <a>
+              <a
+                className="btn btn-square btn-ghost"
+                href={cyberConnect}
+                onClick={stopPropagation}
+              >
                 <CyberConnectIcon />
               </a>
             </div>
           </div>
         </div>
         <div
-          className="absolute top-0 h-full w-full card bg-accent shadow-2xl transition-all duration-500"
+          className="absolute top-0 h-full w-full card shadow-2xl transition-all duration-500 bg-neutral text-neutral-content"
           style={{
             transform: `rotateY(${isFlip ? "0" : "-180deg"})`,
             backfaceVisibility: "hidden",
           }}
-        ></div>
+        >
+          <div className="flex-col justify-center items-center p-4">
+            <figure>
+              <img
+                className="h-32 bg-secondary mask mask-hexagon aspect-square object-cover"
+                src={String(query.i)}
+                alt="Collection"
+              />
+            </figure>
+            <p className="text-center text-2xl font-bold">
+              {`${String(query.n)}'s  Collection`}
+            </p>
+            <div className="w-full h-0.5 bg-neutral-content my-4"></div>
+            <h2 className="text-3xl font-bold">POAPs</h2>
+            <div className="flex flex-wrap gap-2">
+              {poaps.map((poap) => (
+                <PoapView poap={poap} key={poap.tokenId} />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+  );
+};
+
+export const PoapView: React.FC<{ poap: Poap }> = ({ poap }) => {
+  const close = (e: React.MouseEvent<HTMLElement>) => {
+    window.location.href = "#";
+    e.stopPropagation();
+  };
+  return (
+    <>
+      <a
+        className="w-1/4 rounded-full bg-accent shadow-xl"
+        href={`#${poap.tokenId}`}
+        onClick={stopPropagation}
+      >
+        <img src={poap.event.image_url} alt={poap.event.name} />
+      </a>
+      <div className="modal" id={poap.tokenId} onClick={close}>
+        <div className="modal-box text-base-content " onClick={stopPropagation}>
+          <div className="flex items-center gap-2 py-4">
+            <img
+              src={poap.event.image_url}
+              className="w-1/3"
+              alt={poap.event.name}
+            />
+            <h3 className="font-bold text-lg ">{poap.event.name}</h3>
+          </div>
+          <p>{poap.event.description}</p>
+          <div className="modal-action">
+            <a className="btn btn-ghost" href="#">
+              Close
+            </a>
+            <a className="btn" href={poap.event.event_url}>
+              View Event Page
+            </a>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
