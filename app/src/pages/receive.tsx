@@ -70,6 +70,7 @@ export const ReceiveBody = () => {
   }, [ticket, contract]);
   return (
     <>
+      <MintModal />
       <div className="flex items-center p-2 gap-4 justify-center">
         <iframe
           src={

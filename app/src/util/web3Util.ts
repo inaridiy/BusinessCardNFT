@@ -12,6 +12,7 @@ const providerOptions = async () => ({
         }`,
         80001: `https://rpc-mumbai.matic.today`,
         81: `https://rpc.shibuya.astar.network:8545`,
+        592: `https://rpc.astar.network:8545`,
       },
     },
   },
@@ -117,5 +118,17 @@ export const chainParameters = {
       symbol: "SBY",
     },
     rpcUrls: ["https://rpc.shibuya.astar.network:8545"],
+  },
+  "0x250": {
+    chainId: "0x250",
+    blockExplorerUrls: ["https://astar.subscan.io"],
+    chainName: "Astar Network",
+    iconUrls: [],
+    nativeCurrency: {
+      decimals: 18,
+      name: "ASTR",
+      symbol: "ASTR",
+    },
+    rpcUrls: ["https://rpc.astar.network:8545"],
   },
 };
