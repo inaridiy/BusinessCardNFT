@@ -1,12 +1,12 @@
 import DefaultLayout from "@/components/DefaultLayout";
-import { Web3Context } from "@/components/Web3Provider";
 import { useContract } from "@/hooks/useContract";
 import { useWeb3 } from "@/hooks/useWeb3";
 import { CardMeta } from "@/types/cardMeta";
 import { cardMetaToUrl, cardUri } from "@/util/cardUtil";
 import { nanoid } from "nanoid";
 import type { NextPage } from "next";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import QRCode from "react-qr-code";
 
 const handler =
   (cb: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -32,9 +32,9 @@ export const PrintBody = () => {
   });
   const [isEditable, setEditable] = useState(false);
   const [isTransferable, setTransferable] = useState(false);
-  const { account, isLoading, connectWallet, isTargetChain } =
-    useContext(Web3Context);
+  const { account, isLoading, connectWallet, isTargetChain } = useWeb3();
   const contract = useContract();
+  const [ticket, setTicket] = useState("");
 
   const setter = (key: keyof CardMeta) => (value: string) =>
     setMeta({ ...meta, [key]: value });
@@ -44,7 +44,8 @@ export const PrintBody = () => {
       await contract.print(cardUri(meta), isTransferable, isEditable, 1000);
       const ticket = nanoid().slice(0, 6);
       await contract.mintTicket(ticket, 365, 1, true);
-      console.log(ticket);
+      setTicket(ticket);
+      window.location.href = "#ticket";
     }
   };
 
@@ -59,75 +60,124 @@ export const PrintBody = () => {
   }, [account]);
 
   return (
-    <div className="flex items-center justify-center m-2">
-      <div className="flex-col flex gap-2 sm:max-w-sm  md:max-w-md w-full">
-        <TextInput
-          label="Name"
-          placeholder="Type Your Name"
-          value={meta.name}
-          onChange={setter("name")}
-        />
-        <TextInput
-          label="Message"
-          placeholder="Type Message"
-          value={meta.subtitle}
-          onChange={setter("subtitle")}
-        />
-        <TextInput
-          label="Icon"
-          placeholder="Type Your Icon URL"
-          value={meta.icon}
-          onChange={setter("icon")}
-        />
+    <>
+      <TicketModal ticket={ticket} />
+      <div className="flex items-center justify-center m-2">
+        <div className="flex-col flex gap-2 sm:max-w-sm  md:max-w-md w-full">
+          <TextInput
+            label="Name"
+            placeholder="Type Your Name"
+            value={meta.name}
+            onChange={setter("name")}
+          />
+          <TextInput
+            label="Message"
+            placeholder="Type Message"
+            value={meta.subtitle}
+            onChange={setter("subtitle")}
+          />
+          <TextInput
+            label="Icon"
+            placeholder="Type Your Icon URL"
+            value={meta.icon}
+            onChange={setter("icon")}
+          />
+          <TextInput
+            label="Twitter"
+            placeholder="Type Your Twitter ID"
+            value={meta.twitter}
+            onChange={setter("twitter")}
+          />
+          <TextInput
+            label="Github"
+            placeholder="Type Your Github Name"
+            value={meta.github}
+            onChange={setter("github")}
+          />
+          <div className="flex gap-8">
+            <ToggleInput value={isEditable} onChange={setEditable}>
+              Editable
+            </ToggleInput>
+            <ToggleInput value={isTransferable} onChange={setTransferable}>
+              Transferable
+            </ToggleInput>
+          </div>
+          <ThemeInput onChange={setter("theme")} />
 
-        <TextInput
-          label="Twitter"
-          placeholder="Type Your Twitter ID"
-          value={meta.twitter}
-          onChange={setter("twitter")}
-        />
-        <TextInput
-          label="Github"
-          placeholder="Type Your Github Name"
-          value={meta.github}
-          onChange={setter("github")}
-        />
-        <div className="flex gap-8">
-          <ToggleInput value={isEditable} onChange={setEditable}>
-            Editable
-          </ToggleInput>
-          <ToggleInput value={isTransferable} onChange={setTransferable}>
-            Transferable
-          </ToggleInput>
+          {isLoading ? (
+            <button className="btn btn-primary loading">Loading</button>
+          ) : !isTargetChain ? (
+            <button className="btn btn-error" disabled>
+              Chain is different.
+            </button>
+          ) : account ? (
+            <button className="btn btn-primary" onClick={() => void print()}>
+              Mint Your Card
+            </button>
+          ) : (
+            <button
+              className="btn btn-primary"
+              onClick={() => void connectWallet}
+            >
+              Connect Wallet
+            </button>
+          )}
         </div>
-        <ThemeInput onChange={setter("theme")} />
-
-        {isLoading ? (
-          <button className="btn btn-primary loading">Loading</button>
-        ) : !isTargetChain ? (
-          <button className="btn btn-error" disabled>
-            Chain is different.
-          </button>
-        ) : account ? (
-          <button className="btn btn-primary" onClick={() => void print()}>
-            Mint Your Card
-          </button>
-        ) : (
-          <button
-            className="btn btn-primary"
-            onClick={() => void connectWallet}
-          >
-            Connect Wallet
-          </button>
-        )}
+        <iframe
+          src={cardMetaToUrl(meta)}
+          className="artboard phone-2 rounded-lg shadow-sm hidden sm:block scale-75"
+        />
       </div>
-      <iframe
-        src={cardMetaToUrl(meta)}
-        className="artboard phone-2 rounded-lg shadow-sm hidden sm:block scale-75"
-      />
+    </>
+  );
+};
+
+export const TicketModal: React.FC<{ ticket: string }> = ({ ticket }) => {
+  const [isCopied, setIsCopied] = useState(false);
+  const url = `https://business-card-nft.vercel.app/receive?ticket=${ticket}`;
+  const copyUrl = () => {
+    void navigator.clipboard.writeText(url);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 1000);
+  };
+  return (
+    <div className="modal modal-bottom sm:modal-middle" id="ticket">
+      <div className="modal-box bg-base-200">
+        <h3 className="font-bold text-2xl">
+          Your Non-Fungible Meishi Was Printed!!
+        </h3>
+        <div>
+          <p>
+            {`Share the QR code or URL below and we'll pass along your business`}
+          </p>
+          <div className="flex justify-center">
+            <div>
+              <p className="text-center text-lg font-bold">QR Code</p>
+              <QRCode value={url} size={128} />
+            </div>
+            <div>
+              <p className="text-center text-lg font-bold">URL</p>
+              <div
+                className="tooltip  tooltip-bottom"
+                data-tip={isCopied ? "Copied!!" : "Click to Copy"}
+              >
+                <button className="btn btn-ghost" onClick={copyUrl}>
+                  {url}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="modal-action">
+          <a href="#" className="btn btn-ghost">
+            Close
+          </a>
+        </div>
+      </div>
     </div>
   );
 };
+
 export const TextInput: React.FC<{
   label: string;
   placeholder: string;

@@ -88,12 +88,12 @@ const Card: NextPage = () => {
     <>
       <div
         data-theme={dataTheme}
-        className="h-full flex justify-center items-center bg-base-200 text-base-content p-4 overflow-hidden"
+        className="min-h-full  flex justify-center items-center bg-base-200 text-base-content p-4 overflow-x-hidden"
         style={{ perspective: "1500px" }}
         onClick={() => setIsFlip(!isFlip)}
       >
         <div
-          className="w-96 artboard phone-1"
+          className="artboard phone-1 "
           style={{
             transform: `rotateY(${x * 10}deg) rotateX(${
               y * -10
