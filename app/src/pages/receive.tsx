@@ -19,6 +19,7 @@ const handler =
 
 export const ReceiveBody = () => {
   const [animationUrl, setAnimationUrl] = useState("");
+  const [isExit, setExit] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [isMinting, setIsMinting] = useState(false);
   const { account, isTargetChain, isLoading, connectWallet } = useWeb3();
@@ -43,6 +44,8 @@ export const ReceiveBody = () => {
       if (contract) {
         const { tokenId } = await contract.ticket(ticket);
         const uri = await contract.uri(tokenId);
+
+        setExit(Boolean(uri));
         const { animation_url, name } = (await (await fetch(uri)).json()) as {
           animation_url: string;
           name: string;
@@ -62,6 +65,9 @@ export const ReceiveBody = () => {
       setTicket(String(query.ticket));
     }
   }, [query]);
+  useEffect(() => {
+    void loadNFT(String(ticket));
+  }, [ticket]);
   return (
     <>
       <h1>{name}</h1>
@@ -90,7 +96,7 @@ export const ReceiveBody = () => {
             <button className="btn btn-error" disabled>
               Chain is different.
             </button>
-          ) : account && animationUrl ? (
+          ) : account && isExit ? (
             <button className="btn btn-primary" onClick={() => void receive()}>
               Mint Your Card
             </button>
