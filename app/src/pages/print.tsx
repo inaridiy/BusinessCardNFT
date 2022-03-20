@@ -1,4 +1,5 @@
 import DefaultLayout from "@/components/DefaultLayout";
+import { useContract } from "@/hooks/useContract";
 import { useWeb3 } from "@/hooks/useWeb3";
 import { CardMeta } from "@/types/cardMeta";
 import { cardMetaToUrl } from "@/util/cardUtil";
@@ -20,6 +21,7 @@ const Home: NextPage = () => {
     github: "",
   });
   const { account, isLoading, connectWallet } = useWeb3();
+  const contract = useContract();
 
   const setter = (key: keyof CardMeta) => (value: string) =>
     setMeta({ ...meta, [key]: value });

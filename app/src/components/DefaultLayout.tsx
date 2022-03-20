@@ -65,7 +65,7 @@ export const AccoutWithAth = () => {
 };
 
 export const ChainState = () => {
-  const { isTargetChain, isMetaMask, provider, account } = useWeb3();
+  const { isTargetChain, isMetaMask, provider } = useWeb3();
   const handleClick = () => {
     if (isMetaMask && provider) {
       void switchChain(provider);

@@ -19,9 +19,7 @@ const Home: NextPage = () => {
             Print your own business card on the blockchain as an ERC1155 NFT
           </p>
           <Link href="/print">
-            <a href="/print" className="btn btn-primary btn-lg">
-              Mint Your Card!!
-            </a>
+            <a className="btn btn-primary btn-lg">Mint Your Card!!</a>
           </Link>
         </div>
         <iframe

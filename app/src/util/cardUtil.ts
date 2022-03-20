@@ -1,6 +1,9 @@
 import { CardMeta } from "@/types/cardMeta";
 
-export const cardMetaToUrl = ({
+export const cardMetaToUrl = (meta: CardMeta) =>
+  `https://business-card-nft.vercel.app/card?${cardQuery(meta)}`;
+
+export const cardQuery = ({
   twitter,
   github,
   name,
@@ -9,8 +12,6 @@ export const cardMetaToUrl = ({
   address,
   theme,
 }: CardMeta) =>
-  `https://business-card-nft.vercel.app/card?t=${encodeURI(
-    twitter
-  )}&s=${encodeURI(subtitle)}&n=${encodeURI(name)}&i=${encodeURI(
-    icon
-  )}&g=${encodeURI(github)}&a=${address}&theme=${theme}`;
+  `t=${encodeURI(twitter)}&s=${encodeURI(subtitle)}&n=${encodeURI(
+    name
+  )}&i=${encodeURI(icon)}&g=${encodeURI(github)}&a=${address}&theme=${theme}`;
