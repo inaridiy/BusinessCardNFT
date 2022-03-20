@@ -29,12 +29,14 @@ export const ReceiveBody = () => {
   const contract = useContract();
 
   const receive = async () => {
-    try {
-      setIsMinting(true);
-      await contract?.receiveCard(ticket);
-      window.location.href = "#comp";
-    } catch (e) {
-      console.error(e);
+    if (contract) {
+      try {
+        setIsMinting(true);
+        await contract.receiveCard(ticket);
+        window.location.href = "#comp";
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 
@@ -71,6 +73,7 @@ export const ReceiveBody = () => {
   return (
     <>
       <MintModal />
+
       <div className="flex items-center p-2 gap-4 justify-center">
         <iframe
           src={
