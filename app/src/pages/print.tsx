@@ -32,12 +32,15 @@ const Home: NextPage = () => {
   const print = async () => {
     if (contract) {
       await contract.print(cardUri(meta), isTransferable, isEditable, 1000);
-      await contract.mintTicket(nanoid().slice(0, 6), 365, 1, true);
+      const ticket = nanoid().slice(0, 6);
+      await contract.mintTicket(ticket, 365, 1, true);
+      console.log(ticket);
     }
   };
 
   useEffect(() => {
     if (account) {
+      console.log(account);
       setMeta({
         ...meta,
         address: account.id,

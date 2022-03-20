@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BsGithub, BsTwitter } from "react-icons/bs";
@@ -87,7 +86,6 @@ const Card: NextPage = () => {
   }, []);
   return (
     <>
-      <NextSeo title={`${String(query.n)}'s Name Card`} />
       <div
         data-theme={dataTheme}
         className="h-full flex justify-center items-center bg-base-200 text-base-content p-4 overflow-hidden"
