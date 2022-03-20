@@ -1,5 +1,8 @@
+import { Web3Provider } from "@/components/Web3Provider";
 import { useWeb3 } from "@/hooks/useWeb3";
+import SEO from "@/seo.config";
 import { switchChain } from "@/util/web3Util";
+import { DefaultSeo } from "next-seo";
 import NextLink from "next/link";
 import React, { useState } from "react";
 import { BsGear, BsGithub, BsMoon, BsSun, BsTwitter } from "react-icons/bs";
@@ -13,14 +16,19 @@ export default function DefaultLayout({
 }) {
   const [isDark, setIsDark] = useState(false);
   return (
-    <div
-      className="min-h-full flex flex-col relative bg-base-100 transition-all"
-      data-theme={isDark ? "dark" : "light"}
-    >
-      <Header {...{ isDark, setIsDark }} />
-      <div className="mt-16 text-base-content">{children}</div>
-      <Footer />
-    </div>
+    <>
+      <Web3Provider>
+        <DefaultSeo {...SEO} />
+        <div
+          className="min-h-full flex flex-col relative bg-base-100 transition-all"
+          data-theme={isDark ? "dark" : "light"}
+        >
+          <Header {...{ isDark, setIsDark }} />
+          <div className="mt-16 text-base-content">{children}</div>
+          <Footer />
+        </div>
+      </Web3Provider>
+    </>
   );
 }
 
