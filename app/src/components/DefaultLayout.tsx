@@ -74,22 +74,20 @@ export const AccoutWithAth = () => {
   }
 };
 
-export const ChainState = () => {
+export const ChainState: React.FC = () => {
   const { isTargetChain, isMetaMask, provider } = useWeb3();
   const handleClick = () => {
     if (isMetaMask && provider) {
       void switchChain(provider);
     }
   };
-  if (isTargetChain) {
-    return <></>;
-  } else {
-    return (
-      <button className="btn btn-square btn-ghost" onClick={handleClick}>
-        <VscDebugDisconnect size="2rem" color="#f21361" />
-      </button>
-    );
-  }
+  return isTargetChain ? (
+    <></>
+  ) : (
+    <button className="btn btn-square btn-ghost" onClick={handleClick}>
+      <VscDebugDisconnect size="2rem" color="#f21361" />
+    </button>
+  );
 };
 
 export const ToggleTheme: React.FC<{

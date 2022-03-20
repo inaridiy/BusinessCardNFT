@@ -25,7 +25,7 @@ export const ReceiveBody = () => {
   const { account, isTargetChain, isLoading, connectWallet } = useWeb3();
   const { query } = useRouter();
   const [ticket, setTicket] = useState("");
-  const [name, setName] = useState("");
+
   const contract = useContract();
 
   const receive = async () => {
@@ -48,11 +48,11 @@ export const ReceiveBody = () => {
         const uri = await contract.uri(tokenId);
         console.log(uri);
         setExit(Boolean(uri));
-        const { animation_url, name } = (await (await fetch(uri)).json()) as {
+        const { animation_url } = (await (await fetch(uri)).json()) as {
           animation_url: string;
           name: string;
         };
-        setName(name);
+
         setAnimationUrl(animation_url);
       }
     } catch (e) {
