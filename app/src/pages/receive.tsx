@@ -44,7 +44,7 @@ export const ReceiveBody = () => {
       if (contract) {
         const { tokenId } = await contract.ticket(ticket);
         const uri = await contract.uri(tokenId);
-
+        console.log(uri);
         setExit(Boolean(uri));
         const { animation_url, name } = (await (await fetch(uri)).json()) as {
           animation_url: string;
@@ -61,16 +61,15 @@ export const ReceiveBody = () => {
   };
   useEffect(() => {
     if (query.ticket) {
-      void loadNFT(String(query.ticket));
       setTicket(String(query.ticket));
+      void loadNFT(String(ticket));
     }
   }, [query]);
   useEffect(() => {
     void loadNFT(String(ticket));
-  }, [ticket]);
+  }, [ticket, contract]);
   return (
     <>
-      <h1>{name}</h1>
       <div className="flex items-center p-2 gap-4 justify-center">
         <iframe
           src={
