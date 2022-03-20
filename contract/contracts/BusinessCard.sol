@@ -24,6 +24,7 @@ contract BusinessCard is ERC1155 {
 
     mapping(uint256 => CardMeta) private cardMetaMap;
     mapping(string => TicketMeta) private tickets;
+    mapping(address => uint256) private ownership;
     mapping(string => mapping(address => bool)) ticketUsageHistory;
 
     constructor() ERC1155("") {}
@@ -42,6 +43,7 @@ contract BusinessCard is ERC1155 {
             _isTransferable,
             _isEditable
         );
+        ownership[msg.sender] = newItemId;
         _mint(msg.sender, newItemId, _amount, "");
     }
 
@@ -58,6 +60,19 @@ contract BusinessCard is ERC1155 {
         returns (TicketMeta memory)
     {
         return tickets[_ticket];
+    }
+
+    //名刺をミントした時にtoken idが分からないから、チケットを発行できなかったので、それ対策の関数
+    function mintTicket(
+        string memory _ticket,
+        uint256 _effectiveDate,
+        uint64 _amount,
+        bool _infinite
+    ) public {
+        uint256 _id = ownership[msg.sender];
+        require(tickets[_ticket].tokenId == 0, "Tickets that already exist.");
+        uint256 effectiveAt = block.timestamp + _effectiveDate * 1 days;
+        tickets[_ticket] = TicketMeta(_id, effectiveAt, _amount, _infinite);
     }
 
     function issueTicket(

@@ -3,6 +3,9 @@ import { CardMeta } from "@/types/cardMeta";
 export const cardMetaToUrl = (meta: CardMeta) =>
   `https://business-card-nft.vercel.app/card?${cardQuery(meta)}`;
 
+export const cardUri = (meta: CardMeta) =>
+  `https://business-card-nft.vercel.app/api/uri?${cardQuery(meta)}`;
+
 export const cardQuery = ({
   twitter,
   github,

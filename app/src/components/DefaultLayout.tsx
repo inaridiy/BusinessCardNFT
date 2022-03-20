@@ -1,8 +1,7 @@
 import { useWeb3 } from "@/hooks/useWeb3";
 import { switchChain } from "@/util/web3Util";
-import { useTheme } from "next-themes";
 import NextLink from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { BsGear, BsGithub, BsMoon, BsSun, BsTwitter } from "react-icons/bs";
 import { VscDebugDisconnect } from "react-icons/vsc";
 
@@ -12,20 +11,23 @@ export default function DefaultLayout({
   children: React.ReactNode;
   theme?: string;
 }) {
-  const { theme } = useTheme() as { theme: string };
+  const [isDark, setIsDark] = useState(false);
   return (
     <div
       className="min-h-full flex flex-col relative bg-base-100 transition-all"
-      data-theme={theme === "dark" ? "dark" : "light"}
+      data-theme={isDark ? "dark" : "light"}
     >
-      <Header />
+      <Header {...{ isDark, setIsDark }} />
       <div className="mt-16 text-base-content">{children}</div>
       <Footer />
     </div>
   );
 }
 
-export const Header: React.FC = () => {
+export const Header: React.FC<{
+  isDark: boolean;
+  setIsDark: (v: boolean) => void;
+}> = (props) => {
   return (
     <nav className="navbar fixed flex justify-between backdrop-blur-sm">
       <NextLink href="/">
@@ -39,7 +41,7 @@ export const Header: React.FC = () => {
         <div className="w-0.5 h-8 bg-base-content"></div>
         <div className="flex-none">
           <ChainState />
-          <ToggleTheme />
+          <ToggleTheme {...props} />
         </div>
       </div>
     </nav>
@@ -82,15 +84,14 @@ export const ChainState = () => {
   }
 };
 
-export const ToggleTheme = () => {
-  const { theme, setTheme } = useTheme() as {
-    theme: string;
-    setTheme: (s: string) => void;
-  };
-  const toggle = () => setTheme(theme === "dark" ? "light" : "dark");
+export const ToggleTheme: React.FC<{
+  isDark: boolean;
+  setIsDark: (v: boolean) => void;
+}> = ({ isDark, setIsDark }) => {
+  const toggle = () => setIsDark(!isDark);
   return (
     <button className="btn btn-square btn-ghost" onClick={toggle}>
-      {theme === "dark" ? <BsMoon size="2rem" /> : <BsSun size="2rem" />}
+      {isDark ? <BsMoon size="2rem" /> : <BsSun size="2rem" />}
     </button>
   );
 };

@@ -2,7 +2,8 @@ import DefaultLayout from "@/components/DefaultLayout";
 import { useContract } from "@/hooks/useContract";
 import { useWeb3 } from "@/hooks/useWeb3";
 import { CardMeta } from "@/types/cardMeta";
-import { cardMetaToUrl } from "@/util/cardUtil";
+import { cardMetaToUrl, cardUri } from "@/util/cardUtil";
+import { nanoid } from "nanoid";
 import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 
@@ -20,11 +21,20 @@ const Home: NextPage = () => {
     theme: "light",
     github: "",
   });
-  const { account, isLoading, connectWallet } = useWeb3();
+  const [isEditable, setEditable] = useState(false);
+  const [isTransferable, setTransferable] = useState(false);
+  const { account, isLoading, connectWallet, isTargetChain } = useWeb3();
   const contract = useContract();
 
   const setter = (key: keyof CardMeta) => (value: string) =>
     setMeta({ ...meta, [key]: value });
+
+  const print = async () => {
+    if (contract) {
+      await contract.print(cardUri(meta), isTransferable, isEditable, 1000);
+      await contract.mintTicket(nanoid().slice(0, 6), 365, 1, true);
+    }
+  };
 
   useEffect(() => {
     if (account) {
@@ -71,12 +81,26 @@ const Home: NextPage = () => {
             value={meta.github}
             onChange={setter("github")}
           />
+          <div className="flex gap-8">
+            <ToggleInput value={isEditable} onChange={setEditable}>
+              Editable
+            </ToggleInput>
+            <ToggleInput value={isTransferable} onChange={setTransferable}>
+              Transferable
+            </ToggleInput>
+          </div>
           <ThemeInput onChange={setter("theme")} />
 
           {isLoading ? (
             <button className="btn btn-primary loading">Loading</button>
+          ) : !isTargetChain ? (
+            <button className="btn btn-error" disabled>
+              Chain is different.
+            </button>
           ) : account ? (
-            <button className="btn btn-primary">Mint Your Card</button>
+            <button className="btn btn-primary" onClick={() => void print()}>
+              Mint Your Card
+            </button>
           ) : (
             <button
               className="btn btn-primary"
@@ -114,6 +138,23 @@ export const TextInput: React.FC<{
         value={value}
         onChange={handler(onChange)}
         disabled={isLoading}
+      />
+    </div>
+  );
+};
+export const ToggleInput: React.FC<{
+  children: React.ReactNode;
+  onChange: (s: boolean) => void;
+  value: boolean;
+}> = ({ children, value, onChange }) => {
+  return (
+    <div className="form-control">
+      <label className="label-text font-bold text-lg ">{children}</label>
+      <input
+        type="checkbox"
+        className="toggle"
+        checked={value}
+        onChange={(e) => onChange(e.target.checked)}
       />
     </div>
   );

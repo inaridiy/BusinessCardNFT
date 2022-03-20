@@ -47,6 +47,7 @@ export interface BusinessCardInterface extends utils.Interface {
     "edit(uint256,string)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "issueTicket(uint256,string,uint256,uint64,bool)": FunctionFragment;
+    "mintTicket(string,uint256,uint64,bool)": FunctionFragment;
     "name()": FunctionFragment;
     "print(string,bool,bool,uint256)": FunctionFragment;
     "receiveCard(string)": FunctionFragment;
@@ -78,6 +79,10 @@ export interface BusinessCardInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "issueTicket",
     values: [BigNumberish, string, BigNumberish, BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mintTicket",
+    values: [string, BigNumberish, BigNumberish, boolean]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
@@ -119,6 +124,7 @@ export interface BusinessCardInterface extends utils.Interface {
     functionFragment: "issueTicket",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "mintTicket", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "print", data: BytesLike): Result;
   decodeFunctionResult(
@@ -263,6 +269,14 @@ export interface BusinessCard extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    mintTicket(
+      _ticket: string,
+      _effectiveDate: BigNumberish,
+      _amount: BigNumberish,
+      _infinite: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     name(overrides?: CallOverrides): Promise<[string]>;
 
     print(
@@ -353,6 +367,14 @@ export interface BusinessCard extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  mintTicket(
+    _ticket: string,
+    _effectiveDate: BigNumberish,
+    _amount: BigNumberish,
+    _infinite: boolean,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   name(overrides?: CallOverrides): Promise<string>;
 
   print(
@@ -433,6 +455,14 @@ export interface BusinessCard extends BaseContract {
 
     issueTicket(
       _id: BigNumberish,
+      _ticket: string,
+      _effectiveDate: BigNumberish,
+      _amount: BigNumberish,
+      _infinite: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    mintTicket(
       _ticket: string,
       _effectiveDate: BigNumberish,
       _amount: BigNumberish,
@@ -577,6 +607,14 @@ export interface BusinessCard extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    mintTicket(
+      _ticket: string,
+      _effectiveDate: BigNumberish,
+      _amount: BigNumberish,
+      _infinite: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     print(
@@ -658,6 +696,14 @@ export interface BusinessCard extends BaseContract {
 
     issueTicket(
       _id: BigNumberish,
+      _ticket: string,
+      _effectiveDate: BigNumberish,
+      _amount: BigNumberish,
+      _infinite: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    mintTicket(
       _ticket: string,
       _effectiveDate: BigNumberish,
       _amount: BigNumberish,

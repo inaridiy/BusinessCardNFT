@@ -162,15 +162,6 @@ const Card: NextPage = () => {
             }}
           >
             <div className="flex-col justify-center items-center p-4">
-              <figure>
-                {query.i && (
-                  <img
-                    className="h-32 bg-secondary mask mask-hexagon aspect-square object-cover"
-                    src={String(query.i)}
-                    alt="Collection"
-                  />
-                )}
-              </figure>
               <p className="text-center text-2xl font-bold">
                 {`${String(query.n)}'s  Collection`}
               </p>

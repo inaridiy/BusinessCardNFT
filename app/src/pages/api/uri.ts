@@ -18,7 +18,7 @@ const tokenUri = (req: NextApiRequest, res: NextApiResponse) => {
   ).toString();
 
   const metadata = {
-    description: "${name}'s business card made with Non-Fungible Meishi",
+    description: `${name}'s business card made with Non-Fungible Meishi`,
     image: `https://business-card-nft.vercel.app/api/ss?${queryString}`,
     external_url: `https://business-card-nft.vercel.app/card?${queryString}`,
     name: `${name}'s  Meishi`,
