@@ -38,9 +38,13 @@ const Card: NextPage = () => {
   const [y, setY] = useState(0);
   const [poaps, setPoaps] = useState<Poap[]>([]);
   const dataTheme = String(query.theme) || "lofi";
-  const twitter = `https://twitter.com/${String(query.t).replace(/^@/, "")}`;
-  const github = `https://github.com/${String(query.g)}`;
-  const cyberConnect = `https://app.cyberconnect.me/address/${String(query.a)}`;
+  const twitter = query.t
+    ? `https://twitter.com/${String(query.t).replace(/^@/, "")}`
+    : "";
+  const github = query.g ? `https://github.com/${String(query.g)}` : "";
+  const cyberConnect = query.a
+    ? `https://app.cyberconnect.me/address/${String(query.a)}`
+    : "";
 
   const fetchPoap = async () => {
     const res = await fetch(
@@ -107,38 +111,46 @@ const Card: NextPage = () => {
             }}
           >
             <figure>
-              <img
-                className="h-48 bg-primary mask mask-hexagon mt-4 aspect-square object-cover"
-                src={String(query.i)}
-                alt="Profile Icon"
-              />
+              {query.i && (
+                <img
+                  className="h-48 bg-primary mask mask-hexagon mt-4 aspect-square object-cover"
+                  src={String(query.i)}
+                  alt="Profile Icon"
+                />
+              )}
             </figure>
             <div className="card-body">
               <h2 className="card-title text-4xl">{String(query.n)}</h2>
               <p>{String(query.s || "")}</p>
 
               <div className="card-actions justify-end items-center gap-0">
-                <a
-                  href={twitter}
-                  onClick={stopPropagation}
-                  className="btn btn-square btn-ghost"
-                >
-                  <BsTwitter size="2rem" />
-                </a>
-                <a
-                  href={github}
-                  onClick={stopPropagation}
-                  className="btn btn-square btn-ghost"
-                >
-                  <BsGithub size="2rem" />
-                </a>
-                <a
-                  className="btn btn-square btn-ghost"
-                  href={cyberConnect}
-                  onClick={stopPropagation}
-                >
-                  <CyberConnectIcon />
-                </a>
+                {twitter && (
+                  <a
+                    href={twitter}
+                    onClick={stopPropagation}
+                    className="btn btn-square btn-ghost"
+                  >
+                    <BsTwitter size="2rem" />
+                  </a>
+                )}
+                {github && (
+                  <a
+                    href={github}
+                    onClick={stopPropagation}
+                    className="btn btn-square btn-ghost"
+                  >
+                    <BsGithub size="2rem" />
+                  </a>
+                )}
+                {cyberConnect && (
+                  <a
+                    className="btn btn-square btn-ghost"
+                    href={cyberConnect}
+                    onClick={stopPropagation}
+                  >
+                    <CyberConnectIcon />
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -151,11 +163,13 @@ const Card: NextPage = () => {
           >
             <div className="flex-col justify-center items-center p-4">
               <figure>
-                <img
-                  className="h-32 bg-secondary mask mask-hexagon aspect-square object-cover"
-                  src={String(query.i)}
-                  alt="Collection"
-                />
+                {query.i && (
+                  <img
+                    className="h-32 bg-secondary mask mask-hexagon aspect-square object-cover"
+                    src={String(query.i)}
+                    alt="Collection"
+                  />
+                )}
               </figure>
               <p className="text-center text-2xl font-bold">
                 {`${String(query.n)}'s  Collection`}

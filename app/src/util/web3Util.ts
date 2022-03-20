@@ -11,6 +11,7 @@ const providerOptions = async () => ({
           process.env.NEXT_PUBLIC_INFURA_PROJECT_ID || ""
         }`,
         80001: `https://rpc-mumbai.matic.today`,
+        81: `https://rpc.shibuya.astar.network:8545`,
       },
     },
   },

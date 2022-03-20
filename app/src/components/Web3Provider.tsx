@@ -75,6 +75,7 @@ export const Web3Provider: React.FC<
   };
 
   const handleAccountsChanged = async (_accountIds: string[]) => {
+    console.log(_accountIds);
     try {
       setIsLoading(true);
       setAccount(await getAccountByIds(_accountIds));

@@ -1,7 +1,10 @@
+import { useWeb3 } from "@/hooks/useWeb3";
+import { switchChain } from "@/util/web3Util";
 import { useTheme } from "next-themes";
 import NextLink from "next/link";
 import React from "react";
 import { BsGear, BsGithub, BsMoon, BsSun, BsTwitter } from "react-icons/bs";
+import { VscDebugDisconnect } from "react-icons/vsc";
 
 export default function DefaultLayout({
   children,
@@ -16,40 +19,86 @@ export default function DefaultLayout({
       data-theme={theme === "dark" ? "dark" : "light"}
     >
       <Header />
-      <div className="mx-auto container mt-16 text-base-content">
-        {children}
-      </div>
+      <div className="mt-16 text-base-content">{children}</div>
       <Footer />
     </div>
   );
 }
 
 export const Header: React.FC = () => {
+  return (
+    <nav className="navbar fixed flex justify-between backdrop-blur-sm">
+      <NextLink href="/">
+        <a className="btn btn-ghost text-base-content normal-case text-2xl">
+          <span className="hidden sm:block">Non-Fungible Meishi</span>
+          <span className="sm:hidden ">NFMeishi</span>
+        </a>
+      </NextLink>
+      <div className="flex-none gap-2">
+        <AccoutWithAth />
+        <div className="w-0.5 h-8 bg-base-content"></div>
+        <div className="flex-none">
+          <ChainState />
+          <ToggleTheme />
+        </div>
+      </div>
+    </nav>
+  );
+};
+export const AccoutWithAth = () => {
+  const { connectWallet, account, isLoading } = useWeb3();
+  if (isLoading) {
+    return <button className="btn btn-ghost  loading">Loading</button>;
+  } else if (account) {
+    return (
+      <div className="font-bold text-lg">
+        {account.ethName || account.abbreviatedId}
+      </div>
+    );
+  } else {
+    return (
+      <button className="btn btn-ghost" onClick={() => void connectWallet()}>
+        Connect Wallet
+      </button>
+    );
+  }
+};
+
+export const ChainState = () => {
+  const { isTargetChain, isMetaMask, provider, account } = useWeb3();
+  const handleClick = () => {
+    if (isMetaMask && provider) {
+      void switchChain(provider);
+    }
+  };
+  if (isTargetChain) {
+    return <></>;
+  } else {
+    return (
+      <button className="btn btn-square btn-ghost" onClick={handleClick}>
+        <VscDebugDisconnect size="2rem" color="#f21361" />
+      </button>
+    );
+  }
+};
+
+export const ToggleTheme = () => {
   const { theme, setTheme } = useTheme() as {
     theme: string;
     setTheme: (s: string) => void;
   };
   const toggle = () => setTheme(theme === "dark" ? "light" : "dark");
   return (
-    <nav className="navbar fixed flex justify-between">
-      <NextLink href="/">
-        <a className="btn btn-ghost text-base-content normal-case text-2xl">
-          NF Business Card
-        </a>
-      </NextLink>
-      <div className="flex-none">
-        <button className="btn btn-square btn-ghost" onClick={toggle}>
-          {theme === "dark" ? <BsMoon size="2rem" /> : <BsSun size="2rem" />}
-        </button>
-      </div>
-    </nav>
+    <button className="btn btn-square btn-ghost" onClick={toggle}>
+      {theme === "dark" ? <BsMoon size="2rem" /> : <BsSun size="2rem" />}
+    </button>
   );
 };
 
 export const Footer: React.FC = () => (
   <footer className="footer items-center p-4 bg-neutral text-neutral-content mt-auto">
     <div className="items-center grid-flow-col">
-      <BsGear size="36" className="animation-spin2" />
+      <BsGear size="36" />
       <p> NF Business Card © 2022 - All right reserved</p>
     </div>
     <div className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
