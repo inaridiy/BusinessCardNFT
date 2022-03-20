@@ -1,17 +1,26 @@
 import DefaultLayout from "@/components/DefaultLayout";
+import { Web3Context } from "@/components/Web3Provider";
 import { useContract } from "@/hooks/useContract";
 import { useWeb3 } from "@/hooks/useWeb3";
 import { CardMeta } from "@/types/cardMeta";
 import { cardMetaToUrl, cardUri } from "@/util/cardUtil";
 import { nanoid } from "nanoid";
 import type { NextPage } from "next";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 const handler =
   (cb: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) =>
     cb(e.target.value);
 
 const Home: NextPage = () => {
+  return (
+    <DefaultLayout>
+      <PrintBody />
+    </DefaultLayout>
+  );
+};
+
+export const PrintBody = () => {
   const [meta, setMeta] = useState<CardMeta>({
     twitter: "",
     subtitle: "",
@@ -23,7 +32,8 @@ const Home: NextPage = () => {
   });
   const [isEditable, setEditable] = useState(false);
   const [isTransferable, setTransferable] = useState(false);
-  const { account, isLoading, connectWallet, isTargetChain } = useWeb3();
+  const { account, isLoading, connectWallet, isTargetChain } =
+    useContext(Web3Context);
   const contract = useContract();
 
   const setter = (key: keyof CardMeta) => (value: string) =>
@@ -40,7 +50,6 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (account) {
-      console.log(account);
       setMeta({
         ...meta,
         address: account.id,
@@ -50,78 +59,75 @@ const Home: NextPage = () => {
   }, [account]);
 
   return (
-    <DefaultLayout>
-      <div className="flex items-center justify-center m-2">
-        <div className="flex-col flex gap-2 sm:max-w-sm  md:max-w-md w-full">
-          <TextInput
-            label="Name"
-            placeholder="Type Your Name"
-            value={meta.name}
-            onChange={setter("name")}
-          />
-          <TextInput
-            label="Message"
-            placeholder="Type Message"
-            value={meta.subtitle}
-            onChange={setter("subtitle")}
-          />
-          <TextInput
-            label="Icon"
-            placeholder="Type Your Icon URL"
-            value={meta.icon}
-            onChange={setter("icon")}
-          />
-
-          <TextInput
-            label="Twitter"
-            placeholder="Type Your Twitter ID"
-            value={meta.twitter}
-            onChange={setter("twitter")}
-          />
-          <TextInput
-            label="Github"
-            placeholder="Type Your Github Name"
-            value={meta.github}
-            onChange={setter("github")}
-          />
-          <div className="flex gap-8">
-            <ToggleInput value={isEditable} onChange={setEditable}>
-              Editable
-            </ToggleInput>
-            <ToggleInput value={isTransferable} onChange={setTransferable}>
-              Transferable
-            </ToggleInput>
-          </div>
-          <ThemeInput onChange={setter("theme")} />
-
-          {isLoading ? (
-            <button className="btn btn-primary loading">Loading</button>
-          ) : !isTargetChain ? (
-            <button className="btn btn-error" disabled>
-              Chain is different.
-            </button>
-          ) : account ? (
-            <button className="btn btn-primary" onClick={() => void print()}>
-              Mint Your Card
-            </button>
-          ) : (
-            <button
-              className="btn btn-primary"
-              onClick={() => void connectWallet}
-            >
-              Connect Wallet
-            </button>
-          )}
-        </div>
-        <iframe
-          src={cardMetaToUrl(meta)}
-          className="artboard phone-2 rounded-lg shadow-sm hidden sm:block scale-75"
+    <div className="flex items-center justify-center m-2">
+      <div className="flex-col flex gap-2 sm:max-w-sm  md:max-w-md w-full">
+        <TextInput
+          label="Name"
+          placeholder="Type Your Name"
+          value={meta.name}
+          onChange={setter("name")}
         />
+        <TextInput
+          label="Message"
+          placeholder="Type Message"
+          value={meta.subtitle}
+          onChange={setter("subtitle")}
+        />
+        <TextInput
+          label="Icon"
+          placeholder="Type Your Icon URL"
+          value={meta.icon}
+          onChange={setter("icon")}
+        />
+
+        <TextInput
+          label="Twitter"
+          placeholder="Type Your Twitter ID"
+          value={meta.twitter}
+          onChange={setter("twitter")}
+        />
+        <TextInput
+          label="Github"
+          placeholder="Type Your Github Name"
+          value={meta.github}
+          onChange={setter("github")}
+        />
+        <div className="flex gap-8">
+          <ToggleInput value={isEditable} onChange={setEditable}>
+            Editable
+          </ToggleInput>
+          <ToggleInput value={isTransferable} onChange={setTransferable}>
+            Transferable
+          </ToggleInput>
+        </div>
+        <ThemeInput onChange={setter("theme")} />
+
+        {isLoading ? (
+          <button className="btn btn-primary loading">Loading</button>
+        ) : !isTargetChain ? (
+          <button className="btn btn-error" disabled>
+            Chain is different.
+          </button>
+        ) : account ? (
+          <button className="btn btn-primary" onClick={() => void print()}>
+            Mint Your Card
+          </button>
+        ) : (
+          <button
+            className="btn btn-primary"
+            onClick={() => void connectWallet}
+          >
+            Connect Wallet
+          </button>
+        )}
       </div>
-    </DefaultLayout>
+      <iframe
+        src={cardMetaToUrl(meta)}
+        className="artboard phone-2 rounded-lg shadow-sm hidden sm:block scale-75"
+      />
+    </div>
   );
 };
-
 export const TextInput: React.FC<{
   label: string;
   placeholder: string;
