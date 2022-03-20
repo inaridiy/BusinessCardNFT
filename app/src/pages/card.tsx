@@ -93,7 +93,7 @@ const Card: NextPage = () => {
         onClick={() => setIsFlip(!isFlip)}
       >
         <div
-          className="artboard phone-1 "
+          className="artboard phone-1"
           style={{
             transform: `rotateY(${x * 10}deg) rotateX(${
               y * -10
@@ -124,6 +124,8 @@ const Card: NextPage = () => {
               <div className="card-actions justify-end items-center gap-0">
                 {twitter && (
                   <a
+                    target="_blank"
+                    rel="noopener noreferrer"
                     href={twitter}
                     onClick={stopPropagation}
                     className="btn btn-square btn-ghost"
@@ -133,6 +135,8 @@ const Card: NextPage = () => {
                 )}
                 {github && (
                   <a
+                    target="_blank"
+                    rel="noopener noreferrer"
                     href={github}
                     onClick={stopPropagation}
                     className="btn btn-square btn-ghost"
@@ -142,6 +146,8 @@ const Card: NextPage = () => {
                 )}
                 {cyberConnect && (
                   <a
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="btn btn-square btn-ghost"
                     href={cyberConnect}
                     onClick={stopPropagation}
@@ -207,9 +213,11 @@ export const PoapView: React.FC<{ poap: Poap }> = ({ poap }) => {
             <a className="btn btn-ghost" href="#">
               Close
             </a>
-            <a className="btn" href={poap.event.event_url}>
-              View Event Page
-            </a>
+            {poap.event.event_url && (
+              <a className="btn" href={poap.event.event_url}>
+                View Event Page
+              </a>
+            )}
           </div>
         </div>
       </div>
