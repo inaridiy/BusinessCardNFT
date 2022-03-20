@@ -49,7 +49,10 @@ export const Web3Provider: React.FC<
       setIsLoading(true);
       const [instance, _provider] = await getWeb3Provider();
       setIsMetaMask(instance.isMetaMask);
-      instance.on("accountsChanged", () => void handleAccountsChanged);
+      instance.on(
+        "accountsChanged",
+        (e: string[]) => void handleAccountsChanged(e)
+      );
       instance.on("chainChanged", handleChainChanged);
       instance.on("disconnect", resetWeb3);
       localStorage.setItem("auto_connect", "yes");
