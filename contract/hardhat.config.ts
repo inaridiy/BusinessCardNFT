@@ -1,9 +1,6 @@
-import {
-  EVM_VERSION,
-  SOLIDITY_VERSION,
-} from "@ericxstone/hardhat-blockscout-verify";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
+import "@openzeppelin/hardhat-upgrades";
 import "@typechain/hardhat";
 import * as dotenv from "dotenv";
 import "hardhat-gas-reporter";
@@ -35,17 +32,26 @@ const config: HardhatUserConfig = {
     },
     mumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
-      accounts: ["0x" + process.env.PRIVATE_KEY],
+      accounts: [process.env.PRIVATE_KEY || ""],
+    },
+    polygon: {
+      url: "https://matic-mainnet.chainstacklabs.com",
+      accounts: [process.env.PRIVATE_KEY || ""],
     },
     shibuya: {
       url: "https://rpc.shibuya.astar.network:8545",
       chainId: 81,
-      accounts: ["0x" + process.env.PRIVATE_KEY],
+      accounts: [process.env.PRIVATE_KEY || ""],
     },
     astar: {
       url: "https://rpc.astar.network:8545",
       chainId: 592,
-      accounts: ["0x" + process.env.PRIVATE_KEY],
+      accounts: [process.env.PRIVATE_KEY || ""],
+    },
+    shiden: {
+      url: "https://evm.shiden.astar.network",
+      chainId: 336,
+      accounts: [process.env.PRIVATE_KEY || ""],
     },
   },
   gasReporter: {
