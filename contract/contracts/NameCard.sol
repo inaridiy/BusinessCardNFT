@@ -90,6 +90,14 @@ contract NameCard is ERC1155SupplyUpgradeable {
         cardMeta.uri = uri_;
     }
 
+    function ticket(string memory _ticket)
+        public
+        view
+        returns (TicketMeta memory)
+    {
+        return tickets[_ticket];
+    }
+
     modifier ticketVerify(uint256 id_, string memory ticket_) {
         require(msg.sender == cardMetaMap[id_].author, "It's not your card.");
         require(tickets[ticket_].tokenId == 0, "Tickets that already exist.");
@@ -100,20 +108,11 @@ contract NameCard is ERC1155SupplyUpgradeable {
         uint256 id_,
         string memory ticket_,
         uint256 effectiveTime_,
-        uint64 amount_
-    ) public ticketVerify(id_, ticket_) {
-        uint256 effectiveAt = block.timestamp + effectiveTime_;
-        tickets[ticket_] = TicketMeta(id_, effectiveAt, amount_, false);
-    }
-
-    function createTicket(
-        uint256 id_,
-        string memory ticket_,
-        uint256 effectiveTime_,
+        uint64 amount_,
         bool infinite_
     ) public ticketVerify(id_, ticket_) {
         uint256 effectiveAt = block.timestamp + effectiveTime_;
-        tickets[ticket_] = TicketMeta(id_, effectiveAt, 0, infinite_);
+        tickets[ticket_] = TicketMeta(id_, effectiveAt, amount_, infinite_);
     }
 
     function receiveCard(string memory ticket_) public {
@@ -131,7 +130,9 @@ contract NameCard is ERC1155SupplyUpgradeable {
             !ticketUsageHistory[ticket_][msg.sender],
             "You have already received it."
         );
-
+        if (!ticketMeta.infinite) {
+            ticketMeta.amount--;
+        }
         CardMeta memory cardMeta = cardMetaMap[ticketMeta.tokenId];
         ticketUsageHistory[ticket_][msg.sender] = true;
         _safeTransferFrom(
