@@ -1,36 +1,21 @@
-import { useWeb3 } from "@/hooks/useWeb3";
+import Card from "@/components/card";
+import DefaultLayout from "@/components/DefaultLayout";
 import type { NextPage } from "next";
 
 const Home: NextPage = () => {
-  const { account, isLoading, connectWallet, switchChain, chains } = useWeb3();
-  const test = async () => {
-    await switchChain("shiden");
-  };
   return (
-    <div className="container mx-auto text-gray-800 flex flex-col h-full justify-center items-center">
-      <h1 className="text-6xl font-bold">Hello Web3 World!!</h1>
-      <p className="text-lg">
-        This template contains
-        Next.js,Hardhat,TypeScript,TailwindCSS,ESlint,Prettier and Web3Provider
-        created by inaridiy.eth.
-      </p>
-      {isLoading ? (
-        <button className="text-white bg-gray-600 text-4xl p-4" disabled>
-          Loading
-        </button>
-      ) : account ? (
-        <div className="text-3xl">
-          {`wellcome ${account.ethName || account.abbreviatedId}`}
-        </div>
-      ) : (
-        <button
-          className="text-white bg-gray-800 text-4xl p-4 hover:scale-95 transition duration-150"
-          onClick={() => void connectWallet}
-        >
-          Connect Wallet
-        </button>
-      )}
-    </div>
+    <DefaultLayout>
+      <div className="flex justify-center mt-4 sm:items-center h-full">
+        <Card
+          address="0x4aCc9c9eaFF1cf0e599dCb7a7164Cf2328224ca2"
+          name="inaridiy.eth"
+          icon="https://lh3.googleusercontent.com/nq68MZh2ZssfDMCvGL-iyx-3a4kXmU8jmtBO0vWgYAsPNiHxxWmoONT4dalD9cIAig_CxDMkvueN5GpDh2btDZkgTGZufONV8CJwzGk=w600"
+          media={{
+            github: "https://github.dev/inaridiy/BusinessCardNFT/tree/oldproto",
+          }}
+        />
+      </div>
+    </DefaultLayout>
   );
 };
 

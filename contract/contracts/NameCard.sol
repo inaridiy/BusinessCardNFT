@@ -87,6 +87,7 @@ contract NameCard is ERC1155SupplyUpgradeable {
         CardMeta storage cardMeta = cardMetaMap[id_];
         require(cardMeta.author == msg.sender, "It's not your card.");
         require(cardMeta.isEditable, "Editing is not permitted.");
+        emit URI(uri_, id_);
         cardMeta.uri = uri_;
     }
 

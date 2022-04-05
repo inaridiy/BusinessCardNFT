@@ -29,9 +29,9 @@ export const Web3Context = createContext<Web3ContextInterface>(
   getDefaultContextValue()
 );
 
-export const Web3Provider: React.FC<React.PropsWithChildren<never>> = ({
-  children,
-}) => {
+export const Web3Provider: React.FC<
+  React.PropsWithChildren<{ key?: string }>
+> = ({ children }) => {
   const [provider, setProvider] = useState<Interface["provider"]>(null);
   const [account, setAccount] = useState<Interface["account"]>(null);
   const [chainId, setChainId] = useState<Interface["chainId"]>(null);
