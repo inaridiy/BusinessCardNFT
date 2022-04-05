@@ -5,7 +5,7 @@ import type { NextPage } from "next";
 const Home: NextPage = () => {
   return (
     <DefaultLayout>
-      <div className="flex justify-center mt-4 sm:items-center h-full">
+      <div className="flex justify-center mb-16 items-center h-full">
         <Card
           address="0x4aCc9c9eaFF1cf0e599dCb7a7164Cf2328224ca2"
           name="inaridiy.eth"
