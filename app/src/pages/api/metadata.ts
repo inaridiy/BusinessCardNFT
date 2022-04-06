@@ -11,11 +11,12 @@ const pinata = pinataSDK(
   process.env.PINATA_SECRET_API_KEY
 );
 
-const API = async (req: NextApiRequest, res: NextApiResponse) => {
+const API = (req: NextApiRequest, res: NextApiResponse) => {
   invariant(req.method === "POST");
 
   const standardMeta = convertToStandardMeta(req.body as CardMeta);
   console.log(standardMeta);
+
   res.end();
 };
 export default API;
