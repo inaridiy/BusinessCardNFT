@@ -95,6 +95,16 @@ export const defaultChains = {
   },
 };
 
+export const contractList = {
+  astar: {
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string,
+    rpc: defaultChains["astar"].rpcUrls[0],
+    chainId: defaultChains["astar"].chainId,
+  },
+};
+
+export type contractTypes = keyof typeof contractList;
+
 export type Chains = keyof typeof defaultChains;
 
 export const getDefaultProviderOptions =

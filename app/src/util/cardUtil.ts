@@ -1,14 +1,30 @@
 import { CardMeta, CardStandardMete, Poap } from "@/types/cardMetaTypes";
 import invariant from "tiny-invariant";
 
+export const fetchIpfs = async (ipfs: string) => {
+  const res = await fetch(
+    `https://cloudflare-ipfs.com/ipfs/${ipfs.replace("ipfs://", "")}`
+  );
+  const meta = convertStandardToMeta((await res.json()) as CardStandardMete);
+  return meta;
+};
+
 export const getPoap = async (address: string) => {
-  console.log(address);
   const res = await fetch(
     `https://api.poap.xyz/actions/scan/${String(address)}`
   );
   const json = (await res.json()) as Poap[] | unknown;
   const poaps = (Array.isArray(json) ? json : []) as Poap[];
   return poaps;
+};
+
+export const convertStandardToMeta = (standard: CardStandardMete): CardMeta => {
+  const { attributes } = standard;
+  const cardMeta = Object.assign(
+    {},
+    attributes.map(({ trait_type, value }) => ({ [trait_type]: value }))
+  );
+  return cardMeta as CardMeta;
 };
 
 export const convertToStandardMeta = (meta: CardMeta): CardStandardMete => {

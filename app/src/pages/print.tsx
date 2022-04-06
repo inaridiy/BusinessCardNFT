@@ -2,14 +2,19 @@ import Card from "@/components/card";
 import DefaultLayoutWithProvider from "@/components/DefaultLayout";
 import { TextInput, ThemeInput, ToggleInput } from "@/components/ui/input";
 import { UsefulButton } from "@/components/UsefulBtn";
-import { useInputs, useWeb3 } from "@/hooks";
+import { useContract, useInputs, useWeb3 } from "@/hooks";
 import { closeModal } from "@/util";
 import { useEffect, useState } from "react";
+import { AiOutlineCloseCircle } from "react-icons/ai";
+import invariant from "tiny-invariant";
 
 export default function Page() {
   const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
   const [isEditable, setEditable] = useState(false);
   const [isTransferable, setTransferable] = useState(false);
+  const { isLoading, account } = useWeb3();
+  const contract = useContract("astar");
   const { value, handler, setter, margeValue } = useInputs({
     address: "0x4aCc9c9eaFF1cf0e599dCb7a7164Cf2328224ca2",
     name: "",
@@ -20,12 +25,13 @@ export default function Page() {
     theme: "light",
     cyberConnect: "",
   });
-  const { isLoading, account } = useWeb3();
 
   const mint = async () => {
     try {
+      setError("");
       setStatus("UploadMetaData to IPFS");
-      await fetch("/api/metadata", {
+      invariant(contract);
+      const res = await fetch("/api/metadata", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -33,8 +39,17 @@ export default function Page() {
         },
         body: JSON.stringify(value),
       });
+      const { uri, signature } = (await res.json()) as {
+        uri: string;
+        signature: string;
+      };
+      setStatus("Mint Meishi on BlockChain");
+      await contract.print(uri, signature, isTransferable, isEditable, 1000);
     } catch (e) {
-      console.error(e);
+      const err = e as { message?: string };
+      setError(err.message ? String(err.message) : String(e));
+    } finally {
+      setStatus("");
     }
   };
 
@@ -63,17 +78,14 @@ export default function Page() {
       >
         <div className="modal-box">
           <button className="btn loading btn-ghost w-full"></button>
-          <p className="text-2xl font-bold text-center"> {status}</p>
+          <p className="text-2xl font-bold text-center">{status}</p>
         </div>
       </div>
       <div className="h-full container mx-auto relative sm:flex items-center justify-center">
         <div className="flex-col flex card-body mb-24 max-w-lg">
-          <UsefulButton className="btn btn-outline sm:hidden">
-            <a className="" href="#preview">
-              Preview
-            </a>
-          </UsefulButton>
-
+          <a className="btn btn-outline sm:hidden" href="#preview">
+            Preview
+          </a>
           <TextInput
             label="Name"
             placeholder="type your name"
@@ -117,9 +129,18 @@ export default function Page() {
               Transferable
             </ToggleInput>
           </div>
-
           <ThemeInput onChange={setter("theme")} disabled={isLoading} />
-
+          {error && (
+            <div className="alert alert-error font-bold">
+              <div>
+                <AiOutlineCloseCircle
+                  className="stroke-current"
+                  size="2.5rem"
+                />
+                <span>{error}</span>
+              </div>
+            </div>
+          )}
           <UsefulButton className="btn" onClick={() => void mint()}>
             Mint
           </UsefulButton>

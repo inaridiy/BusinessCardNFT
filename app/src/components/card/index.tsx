@@ -10,7 +10,7 @@ const Card: React.FC<CardMeta> = (meta) => {
   const { data: poaps } = useQuery(
     ["poap", meta.address],
     () => getPoap(meta.address as string),
-    { enabled: Boolean(meta.address) }
+    { enabled: Boolean(meta.address), refetchOnWindowFocus: false }
   );
   const [isFlip, setIsFlip] = useState(false);
   const [x, setX] = useState(0);
