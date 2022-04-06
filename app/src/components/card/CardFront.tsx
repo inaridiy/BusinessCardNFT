@@ -24,7 +24,7 @@ const CardFront: React.FC<CardMeta> = ({
       </figure>
       <div className="card-body">
         <h1 className="card-title text-4xl">{name || "Unknown"}</h1>
-        <p>{description || ""}</p>
+        <p className="grow">{description || ""}</p>
 
         <div className="card-actions justify-end items-center gap-0">
           <MediaIcon
