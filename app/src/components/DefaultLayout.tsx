@@ -1,17 +1,43 @@
+import { Web3Provider } from "@/components/Web3Provider";
 import NextLink from "next/link";
 import { AiOutlineHome, AiOutlineScan, AiOutlineWallet } from "react-icons/ai";
 import { BsPencil } from "react-icons/bs";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
+
+const DefaultProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Web3Provider>{children}</Web3Provider>
+    </QueryClientProvider>
+  );
+};
 
 const DefaultLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <div className="h-full bg-base-200 text-base-content flex flex-col transition-all">
+    <div className="min-h-full bg-base-200 text-base-content flex flex-col transition-all">
       {children}
       <MobileBar />
     </div>
   );
 };
+
+const DefaultLayoutWithProvider: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
+  return (
+    <DefaultProvider>
+      <DefaultLayout>{children}</DefaultLayout>
+    </DefaultProvider>
+  );
+};
+
+export default DefaultLayoutWithProvider;
 
 export const Header: React.FC = () => {
   return (
@@ -26,12 +52,16 @@ export const Header: React.FC = () => {
 export const MobileBar: React.FC<{ children?: React.ReactNode }> = () => {
   return (
     <nav className="navbar bg-base-100 h-16 fixed w-full bottom-0 justify-center sm:hidden">
-      <a className="btn btn-ghost flex flex-col">
-        <AiOutlineHome size="2rem" />
-      </a>
-      <a className="btn btn-ghost flex-col">
-        <BsPencil size="2rem" />
-      </a>
+      <NextLink href="/">
+        <a className="btn btn-ghost flex flex-col">
+          <AiOutlineHome size="2rem" />
+        </a>
+      </NextLink>
+      <NextLink href="/manage">
+        <a className="btn btn-ghost flex-col">
+          <BsPencil size="2rem" />
+        </a>
+      </NextLink>
       <a className="btn btn-ghost flex-col">
         <AiOutlineWallet size="2rem" />
       </a>
@@ -41,5 +71,3 @@ export const MobileBar: React.FC<{ children?: React.ReactNode }> = () => {
     </nav>
   );
 };
-
-export default DefaultLayout;

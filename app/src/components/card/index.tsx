@@ -1,19 +1,21 @@
-import { CardMeta, Poap } from "@/types/cardMetaTypes";
+import { CardMeta } from "@/types/cardMetaTypes";
+import { stopPropagation } from "@/util";
 import { getPoap } from "@/util/cardUtil";
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import CardBack from "./CardBack";
 import CardFront from "./CardFront";
 
-const Card: React.FC<CardMeta> = ({ address, name, icon, media }) => {
-  const [poaps, setPoaps] = useState<Poap[]>([]);
+const Card: React.FC<CardMeta> = (meta) => {
+  const { data: poaps } = useQuery(
+    ["poap", meta.address],
+    () => getPoap(meta.address as string),
+    { enabled: Boolean(meta.address) }
+  );
   const [isFlip, setIsFlip] = useState(false);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
-  useEffect(() => {
-    if (address) {
-      void getPoap(address).then(setPoaps);
-    }
-  }, [address]);
+
   useEffect(() => {
     const mouseListener = (e: MouseEvent) => {
       setX(e.view?.innerWidth ? e.x / e.view?.innerWidth - 0.5 : x);
@@ -40,7 +42,15 @@ const Card: React.FC<CardMeta> = ({ address, name, icon, media }) => {
   }, []);
 
   return (
-    <div style={{ perspective: "1500px", touchAction: "none" }}>
+    <div
+      onClick={stopPropagation}
+      style={{
+        perspective: "1500px",
+        touchAction: "none",
+        backgroundColor: "transparent",
+      }}
+      data-theme={meta.theme || "light"}
+    >
       <div
         className="artboard phone-1 relative"
         style={{
@@ -58,7 +68,7 @@ const Card: React.FC<CardMeta> = ({ address, name, icon, media }) => {
             backfaceVisibility: "hidden",
           }}
         >
-          <CardFront {...{ name, icon, media }} />
+          <CardFront {...meta} />
         </div>
         <div
           className="absolute card bg-neutral shadow-xl text-neutral-content inset-0 transition-all duration-500"
@@ -69,7 +79,7 @@ const Card: React.FC<CardMeta> = ({ address, name, icon, media }) => {
             backfaceVisibility: "hidden",
           }}
         >
-          <CardBack name={name} poaps={poaps} />
+          <CardBack name={meta.name} poaps={poaps} />
         </div>
       </div>
     </div>

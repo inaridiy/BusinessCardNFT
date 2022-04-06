@@ -28,6 +28,7 @@ contract NameCard is ERC1155SupplyUpgradeable {
     mapping(uint256 => CardMeta) private cardMetaMap;
     mapping(string => TicketMeta) private tickets;
     mapping(string => mapping(address => bool)) ticketUsageHistory;
+    mapping(address => string[]) ticketsOwner;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() initializer {}
@@ -41,12 +42,17 @@ contract NameCard is ERC1155SupplyUpgradeable {
         _signer = signer_;
     }
 
-    modifier _verify(string memory uri_, bytes memory signature_) {
+    modifier _verify(
+        string memory uri_,
+        bytes memory signature_,
+        address singer_
+    ) {
         require(
-            _signer ==
+            singer_ ==
                 keccak256(abi.encodePacked(uri_))
                     .toEthSignedMessageHash()
-                    .recover(signature_)
+                    .recover(signature_),
+            "Signature is incorrect."
         );
         _;
     }
@@ -75,7 +81,7 @@ contract NameCard is ERC1155SupplyUpgradeable {
         bool isTransferable_,
         bool isEditable_,
         uint256 amount_
-    ) public _verify(uri_, signature_) {
+    ) public _verify(uri_, signature_, _signer) {
         _print(msg.sender, uri_, isTransferable_, isEditable_, amount_);
     }
 
@@ -83,7 +89,7 @@ contract NameCard is ERC1155SupplyUpgradeable {
         uint256 id_,
         string memory uri_,
         bytes memory signature_
-    ) public _verify(uri_, signature_) {
+    ) public _verify(uri_, signature_, msg.sender) {
         CardMeta storage cardMeta = cardMetaMap[id_];
         require(cardMeta.author == msg.sender, "It's not your card.");
         require(cardMeta.isEditable, "Editing is not permitted.");
@@ -97,6 +103,14 @@ contract NameCard is ERC1155SupplyUpgradeable {
         returns (TicketMeta memory)
     {
         return tickets[_ticket];
+    }
+
+    function ownerTicket(
+        string memory txt,
+        bytes memory signature_,
+        address owner
+    ) public view _verify(txt, signature_, owner) returns (string[] memory) {
+        return ticketsOwner[owner];
     }
 
     modifier ticketVerify(uint256 id_, string memory ticket_) {
@@ -114,6 +128,7 @@ contract NameCard is ERC1155SupplyUpgradeable {
     ) public ticketVerify(id_, ticket_) {
         uint256 effectiveAt = block.timestamp + effectiveTime_;
         tickets[ticket_] = TicketMeta(id_, effectiveAt, amount_, infinite_);
+        ticketsOwner[msg.sender].push(ticket_);
     }
 
     function receiveCard(string memory ticket_) public {
@@ -145,11 +160,51 @@ contract NameCard is ERC1155SupplyUpgradeable {
         );
     }
 
-    function burnTicket(string memory _ticket) public {
-        TicketMeta memory ticketMeta = tickets[_ticket];
+    function burnTicket(string memory ticket_) public {
+        TicketMeta memory ticketMeta = tickets[ticket_];
         CardMeta memory cardMeta = cardMetaMap[ticketMeta.tokenId];
         require(cardMeta.author == msg.sender, "It's not your ticket.");
-        delete tickets[_ticket];
+        delete tickets[ticket_];
+    }
+
+    function createrURI(address creater_)
+        public
+        view
+        returns (string[] memory)
+    {
+        uint256 uriCount;
+        for (uint256 i = 1; i <= _tokenIds.current(); i++) {
+            if (cardMetaMap[i].author == creater_) {
+                uriCount++;
+            }
+        }
+        string[] memory uris = new string[](uriCount);
+        uint256 hitUriCount;
+        for (uint256 i = 1; i <= _tokenIds.current(); i++) {
+            if (cardMetaMap[i].author == creater_) {
+                uris[hitUriCount] = cardMetaMap[i].uri;
+                hitUriCount++;
+            }
+        }
+        return uris;
+    }
+
+    function havingURI(address owner_) public view returns (string[] memory) {
+        uint256 uriCount;
+        for (uint256 i = 1; i <= _tokenIds.current(); i++) {
+            if (balanceOf(owner_, i) > 0) {
+                uriCount++;
+            }
+        }
+        string[] memory uris = new string[](uriCount);
+        uint256 hitUriCount;
+        for (uint256 i = 1; i <= _tokenIds.current(); i++) {
+            if (balanceOf(owner_, i) > 0) {
+                uris[hitUriCount] = cardMetaMap[i].uri;
+                hitUriCount++;
+            }
+        }
+        return uris;
     }
 
     function uri(uint256 _id) public view override returns (string memory) {

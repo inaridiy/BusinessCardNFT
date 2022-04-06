@@ -17,7 +17,24 @@ export interface CardMeta {
   name?: string;
   icon?: string;
   description?: string;
-  media?: Media;
+  theme?: string;
+  github?: string;
+  twitter?: string;
+  cyberConnect?: string;
+}
+
+export interface CardStandardMete {
+  image: string;
+  name: string;
+  external_url: string;
+  description: string;
+  attributes: Attributes[];
+  animation_url: string;
+}
+
+export interface Attributes {
+  trait_type: string;
+  value: string;
 }
 
 export interface Event {

@@ -9,12 +9,16 @@
     "sync": "yarn typechain --target ethers-v5 --out-dir src/util/contract '../contract/artifacts/contracts/NameCard.sol/NameCard.json'"
   },
   "dependencies": {
+    "@pinata/sdk": "^1.1.24",
     "daisyui": "^2.13.6",
     "ethers": "^5.5.4",
     "next": "12.0.10",
+    "playwright-aws-lambda": "^0.7.0",
+    "playwright-core": "^1.20.2",
     "react": "17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
+    "react-query": "^3.34.19",
     "tiny-invariant": "^1.2.0",
     "web3modal": "^1.9.5"
   },

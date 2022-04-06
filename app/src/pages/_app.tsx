@@ -1,13 +1,20 @@
-import { Web3Provider } from "@/components/Web3Provider";
 import "@/styles/global.css";
+import type { NextPage } from "next";
 import type { AppProps } from "next/app";
+import type { ReactElement, ReactNode } from "react";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <Web3Provider>
-      <Component {...pageProps} />
-    </Web3Provider>
-  );
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? ((page) => page);
+
+  return getLayout(<Component {...pageProps} />);
 }
 
 export default MyApp;

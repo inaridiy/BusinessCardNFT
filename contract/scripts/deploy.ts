@@ -1,12 +1,15 @@
-import { ethers } from "hardhat";
+import { ethers, upgrades } from "hardhat";
 
 async function main() {
-  const BusinessCard = await ethers.getContractFactory("BusinessCard");
-  const businessCard = await BusinessCard.deploy();
+  const Factory = await ethers.getContractFactory("NameCard");
+  const instance = await upgrades.deployProxy(Factory, [
+    "NFMeishi",
+    "0xbc7AfB04e462C42AcD5fE1d8760158D63f8eE984",
+  ]);
 
-  await businessCard.deployed();
+  await instance.deployed();
 
-  console.log("BusinessCard deployed to:", businessCard.address);
+  console.log("Contract deployed to:", instance.address);
 }
 
 main().catch((error) => {

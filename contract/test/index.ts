@@ -48,7 +48,7 @@ describe("Test of NameCard", () => {
   });
 
   it("receive business card test", async () => {
-    const [, account1] = await getSinger();
+    const [owner, account1] = await getSinger();
     const instance = await getContract();
     await instance.print(
       "Hello World",
@@ -67,5 +67,28 @@ describe("Test of NameCard", () => {
     );
 
     expect((await instance.ticket("test ticket")).amount).to.equal(9);
+    console.log(await instance.havingURI(account1.address));
+  });
+
+  it("test", async () => {
+    const [owner, account1] = await getSinger();
+    const instance = await getContract();
+    await instance.print(
+      "Hello World",
+      await signMessage("Hello World"),
+      false,
+      false,
+      1000
+    );
+    await instance.print(
+      "Hello World2",
+      await signMessage("Hello World2"),
+      false,
+      false,
+      1000
+    );
+
+    await instance.createTicket(1, "test ticket", 7 * 24 * 60 * 60, 10, false);
+    // console.log(await instance.createrURI(owner.address));
   });
 });

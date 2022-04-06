@@ -1,18 +1,15 @@
-import { Media } from "@/types/cardMetaTypes";
-import { stopPropagation } from "@/util";
+import { CardMeta } from "@/types/cardMetaTypes";
 import { BsGithub, BsTwitter } from "react-icons/bs";
 import { CyberConnectIcon } from "../ui/CyberConnect";
+import MediaIcon from "./MediaIcon";
 
-const CardFront: React.FC<{
-  icon?: string;
-  name?: string;
-  description?: string;
-  media?: Media;
-}> = ({
+const CardFront: React.FC<CardMeta> = ({
   icon,
   name,
   description,
-  media: { twitter, github, cyberConnect } = {},
+  github,
+  cyberConnect,
+  twitter,
 }) => {
   return (
     <>
@@ -30,39 +27,22 @@ const CardFront: React.FC<{
         <p>{description || ""}</p>
 
         <div className="card-actions justify-end items-center gap-0">
-          {twitter && (
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href={twitter}
-              onClick={stopPropagation}
-              className="btn btn-square btn-ghost"
-            >
-              <BsTwitter size="2rem" />
-            </a>
-          )}
-          {github && (
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href={github}
-              onClick={stopPropagation}
-              className="btn btn-square btn-ghost"
-            >
-              <BsGithub size="2rem" />
-            </a>
-          )}
-          {cyberConnect && (
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-square btn-ghost"
-              href={cyberConnect}
-              onClick={stopPropagation}
-            >
-              <CyberConnectIcon />
-            </a>
-          )}
+          <MediaIcon
+            href={twitter && `https://twitter.com/${twitter.replace(/^@/, "")}`}
+          >
+            <BsTwitter size="2rem" />
+          </MediaIcon>
+          <MediaIcon href={github && `https://github.com/${github}`}>
+            <BsGithub size="2rem" />
+          </MediaIcon>
+          <MediaIcon
+            href={
+              cyberConnect &&
+              `https://app.cyberconnect.me/address/${String(cyberConnect)}`
+            }
+          >
+            <CyberConnectIcon />
+          </MediaIcon>
         </div>
       </div>
     </>
