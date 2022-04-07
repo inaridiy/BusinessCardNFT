@@ -16,7 +16,7 @@ export default function Page() {
   console.log(data);
   return (
     <div className="flex justify-center mb-16 items-center h-full">
-      <NextLink href="print">
+      <NextLink href="/print">
         <a className="btn btn-circle fixed right-4 bottom-20">
           <AiOutlinePlus size="2rem" />
         </a>
