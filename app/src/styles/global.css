@@ -20,3 +20,26 @@ body,
     transform: rotate(360deg);
   }
 }
+
+.markdown {
+  @apply text-base-content text-sm;
+}
+
+.markdown h1 {
+  @apply text-2xl font-bold;
+}
+.markdown h2 {
+  @apply text-xl font-bold;
+}
+
+.markdown h3 {
+  @apply text-lg font-bold;
+}
+
+.markdown a {
+  @apply link link-primary;
+}
+
+.markdown pre {
+  @apply bg-neutral text-neutral-content whitespace-pre p-2 rounded-lg;
+}

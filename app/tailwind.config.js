@@ -5,7 +5,11 @@ module.exports = {
   ],
   mode: "jit",
   theme: {
-    extend: {},
+    extend: {
+      aspectRatio: {
+        card: "400 / 650",
+      },
+    },
   },
   plugins: [require("daisyui")],
 };

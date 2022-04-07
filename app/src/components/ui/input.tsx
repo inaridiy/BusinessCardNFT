@@ -24,6 +24,29 @@ export const TextInput: React.FC<{
   );
 };
 
+export const TextAreaInput: React.FC<{
+  label: string;
+  placeholder: string;
+  value: string;
+  disabled?: boolean;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+}> = ({ onChange, value, label, placeholder, disabled }) => {
+  return (
+    <div className="form-control">
+      <label className="label">
+        <span className="label-text  font-bold text-lg">{label}</span>
+      </label>
+      <textarea
+        placeholder={placeholder}
+        className="textarea textarea-bordered"
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+      />
+    </div>
+  );
+};
+
 export const ThemeInput: React.FC<{
   onChange: (s: string) => void;
   disabled?: boolean;

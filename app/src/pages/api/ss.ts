@@ -12,7 +12,7 @@ const sscard = async (req: NextApiRequest, res: NextApiResponse) => {
   await page.goto(`https://business-card-nft.vercel.app/card?${queryString}`, {
     waitUntil: "networkidle",
   });
-  const image = await page.screenshot({ type: "png" });
+  const image = await page.screenshot({ type: "png", omitBackground: true });
   await browser.close();
   res.setHeader("Cache-Control", "s-maxage=31536000, stale-while-revalidate");
   res.setHeader("Content-Type", "image/png");

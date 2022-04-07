@@ -41,3 +41,9 @@ export const convertToStandardMeta = (meta: CardMeta): CardStandardMete => {
     })),
   };
 };
+
+export const markdownToHtml = async (markdown: string) => {
+  const markdownIt = (await import("markdown-it")).default;
+  const md = markdownIt({ linkify: true });
+  return md.render(markdown);
+};

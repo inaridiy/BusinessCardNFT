@@ -1,6 +1,11 @@
 import Card from "@/components/card";
 import DefaultLayoutWithProvider from "@/components/DefaultLayout";
-import { TextInput, ThemeInput, ToggleInput } from "@/components/ui/input";
+import {
+  TextAreaInput,
+  TextInput,
+  ThemeInput,
+  ToggleInput,
+} from "@/components/ui/input";
 import { UsefulButton } from "@/components/UsefulBtn";
 import { useContract, useInputs, useWeb3 } from "@/hooks";
 import { closeModal } from "@/util";
@@ -44,7 +49,14 @@ export default function Page() {
         signature: string;
       };
       setStatus("Mint Meishi on BlockChain");
-      await contract.print(uri, signature, isTransferable, isEditable, 1000);
+      const tx = await contract.print(
+        uri,
+        signature,
+        isTransferable,
+        isEditable,
+        1000
+      );
+      await tx.wait();
     } catch (e) {
       const err = e as { message?: string };
       setError(err.message ? String(err.message) : String(e));
@@ -100,23 +112,23 @@ export default function Page() {
             onChange={handler("icon")}
             disabled={isLoading}
           />
-          <TextInput
+          <TextAreaInput
             label="Description"
-            placeholder="type your description"
+            placeholder="markdown"
             value={value.description}
             onChange={handler("description")}
             disabled={isLoading}
           />
           <TextInput
             label="Github"
-            placeholder="type your github name"
+            placeholder="hogehoge"
             value={value.github}
             onChange={handler("github")}
             disabled={isLoading}
           />
           <TextInput
             label="Twitter"
-            placeholder="type your github name"
+            placeholder="@hoge"
             value={value.twitter}
             onChange={handler("twitter")}
             disabled={isLoading}
@@ -145,7 +157,7 @@ export default function Page() {
             Mint
           </UsefulButton>
         </div>
-        <div className="hidden sm:block">
+        <div className="hidden sm:block h-full">
           <Card {...value} />
         </div>
       </div>

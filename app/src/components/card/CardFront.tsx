@@ -1,5 +1,7 @@
 import { CardMeta } from "@/types/cardMetaTypes";
+import { markdownToHtml } from "@/util/cardUtil";
 import { BsGithub, BsTwitter } from "react-icons/bs";
+import { useQuery } from "react-query";
 import { CyberConnectIcon } from "../ui/CyberConnect";
 import MediaIcon from "./MediaIcon";
 
@@ -11,6 +13,12 @@ const CardFront: React.FC<CardMeta> = ({
   cyberConnect,
   twitter,
 }) => {
+  const { data: descriptionHtml } = useQuery(
+    description || "description",
+    () => markdownToHtml(description || ""),
+    { initialData: description }
+  );
+  //console.log(descriptionHtml);
   return (
     <>
       <figure>
@@ -24,7 +32,10 @@ const CardFront: React.FC<CardMeta> = ({
       </figure>
       <div className="card-body">
         <h1 className="card-title text-4xl">{name || "Unknown"}</h1>
-        <p className="grow">{description || ""}</p>
+        <article
+          className="grow markdown"
+          dangerouslySetInnerHTML={{ __html: descriptionHtml as string }}
+        />
 
         <div className="card-actions justify-end items-center gap-0">
           <MediaIcon
