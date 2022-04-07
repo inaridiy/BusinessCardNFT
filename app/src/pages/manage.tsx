@@ -1,23 +1,29 @@
 import DefaultLayoutWithProvider from "@/components/DefaultLayout";
-import { useContract, useWeb3 } from "@/hooks";
-import { NameCard } from "@/util/contract";
+import { useCreatorNFTs } from "@/hooks/fetcher";
+import { CardMeta } from "@/types/cardMetaTypes";
 import NextLink from "next/link";
 import { AiOutlinePlus } from "react-icons/ai";
-import { useQuery } from "react-query";
 
 export default function Page() {
-  const { account } = useWeb3();
-  const contract = useContract("astar");
-  const { data } = useQuery(
-    ["cards", account?.id],
-    () => (contract as NameCard).havingURI(account?.id as string),
-    { enabled: Boolean(account && contract), refetchOnWindowFocus: false }
-  );
-  console.log(data);
+  const queries = useCreatorNFTs("astar");
+  console.log(queries);
+  const getCardImage = (meta: CardMeta) => {
+    const searchParams = new URLSearchParams(
+      Object.entries({ ...meta, transmission: "true" })
+    );
+    return `/api/ss?${searchParams.toString()}`;
+  };
   return (
     <div className="flex justify-center mb-16 items-center h-full">
+      <div className="grid grid-cols-2">
+        {queries.map((query, i) => (
+          <div key={`card-${i}`} className="relative h-64 w-32">
+            {query.data && <img src={getCardImage(query.data)} />}
+          </div>
+        ))}
+      </div>
       <NextLink href="/print">
-        <a className="btn btn-circle fixed right-4 bottom-20">
+        <a className="btn btn-circle fixed right-4 bottom-20 shadow-lg">
           <AiOutlinePlus size="2rem" />
         </a>
       </NextLink>

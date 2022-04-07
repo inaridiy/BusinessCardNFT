@@ -20,9 +20,8 @@ export const getPoap = async (address: string) => {
 
 export const convertStandardToMeta = (standard: CardStandardMete): CardMeta => {
   const { attributes } = standard;
-  const cardMeta = Object.assign(
-    {},
-    attributes.map(({ trait_type, value }) => ({ [trait_type]: value }))
+  const cardMeta = Object.fromEntries(
+    attributes.map(({ trait_type, value }) => [trait_type, value])
   );
   return cardMeta as CardMeta;
 };
