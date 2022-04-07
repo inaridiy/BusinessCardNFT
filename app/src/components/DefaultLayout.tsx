@@ -1,5 +1,6 @@
 import { Web3Provider } from "@/components/Web3Provider";
 import NextLink from "next/link";
+import { useEffect } from "react";
 import { AiOutlineHome, AiOutlineScan, AiOutlineWallet } from "react-icons/ai";
 import { BsPencil } from "react-icons/bs";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -14,17 +15,19 @@ const queryClient = new QueryClient({
   },
 });
 
-typeof window === "object" &&
-  void persistQueryClient({
-    queryClient,
-    persistor: createWebStoragePersistor({
-      storage: window.localStorage,
-    }),
-  });
-
 const DefaultProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  useEffect(() => {
+    if (typeof window === "object") {
+      void persistQueryClient({
+        queryClient,
+        persistor: createWebStoragePersistor({
+          storage: window.localStorage,
+        }),
+      });
+    }
+  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <Web3Provider>{children}</Web3Provider>

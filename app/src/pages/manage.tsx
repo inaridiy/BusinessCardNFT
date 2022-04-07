@@ -1,5 +1,7 @@
 import Card from "@/components/card";
 import DefaultLayoutWithProvider from "@/components/DefaultLayout";
+import { UsefulButton } from "@/components/UsefulBtn";
+import { useWeb3 } from "@/hooks";
 import { useCreatorNFTs } from "@/hooks/fetcher";
 import { CardMeta } from "@/types/cardMetaTypes";
 import { getCardImage } from "@/util/cardUtil";
@@ -18,17 +20,22 @@ const CardDetail: React.FC<{ query: UseQueryResult<CardMeta, unknown> }> = ({
         className={`modal ${openView ? "modal-open" : ""}`}
         onClick={() => setOpenView(false)}
       >
-        <div className="scale-75">
+        <div className="scale-75 sm:scale-125">
           <Card {...query.data} />
         </div>
       </div>
-      <div className="relative card bg-base-100">
+      <div className="relative card bg-base-100 shadow">
         <figure
-          className="w-full aspect-card"
+          className="w-full aspect-card bg-base-300"
           onClick={() => setOpenView(true)}
         >
+          <span className="btn btn-ghost loading absolute z-10" />
           {query.data && (
-            <img src={getCardImage(query.data)} alt="card thumbnail" />
+            <img
+              src={getCardImage(query.data)}
+              alt="card thumbnail"
+              className="z-10"
+            />
           )}
         </figure>
 
@@ -45,11 +52,27 @@ const CardDetail: React.FC<{ query: UseQueryResult<CardMeta, unknown> }> = ({
 
 export default function Page() {
   const queries = useCreatorNFTs("astar");
+  const { account } = useWeb3();
+  console.log(account);
+  if (queries.isLoading) {
+    return (
+      <div className="grow flex justify-center items-center">
+        <span className="loading btn btn-ghost" />
+      </div>
+    );
+  }
+  if (!account) {
+    return (
+      <div className="grow flex justify-center items-center">
+        <UsefulButton />
+      </div>
+    );
+  }
 
   return (
-    <div className="flex justify-center mb-16 items-center h-full">
-      <div className="grid grid-cols-2 sm:grid-cols-4 m-3 gap-3">
-        {queries.map((query, i) => (
+    <>
+      <div className="grid grid-cols-2 sm:grid-cols-4 m-3 gap-3 mb-24">
+        {queries.data.map((query, i) => (
           <CardDetail key={`card-${i}`} query={query} />
         ))}
       </div>
@@ -58,7 +81,7 @@ export default function Page() {
           <AiOutlinePlus size="2rem" />
         </a>
       </NextLink>
-    </div>
+    </>
   );
 }
 

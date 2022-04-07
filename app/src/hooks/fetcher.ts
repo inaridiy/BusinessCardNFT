@@ -7,34 +7,35 @@ import { useContract } from "./useContract";
 import { useWeb3 } from "./useWeb3";
 
 export const useCreatorNFTs = (type: contractTypes) => {
-  const { account } = useWeb3();
+  const { account, isLoading } = useWeb3();
   const contract = useContract(type, { fetchOnly: true });
-  const uris = useFetchCreatorUris(contract, account);
-  const metaList = useFetchNFTs(uris || []);
-  return metaList;
+  const query = useFetchCreatorUris(contract, account);
+  const metaList = useFetchNFTs(query.data || []);
+
+  return { data: metaList, isLoading: isLoading || query.isLoading };
 };
 
 export const useFetchUris = (
   contract?: NameCard | null,
   account?: Account | null
 ) => {
-  const { data } = useQuery(
+  const query = useQuery(
     ["cards", account?.id],
     () => (contract as NameCard).havingURI(account?.id as string),
     { enabled: Boolean(account && contract), refetchOnWindowFocus: false }
   );
-  return data;
+  return query;
 };
 export const useFetchCreatorUris = (
   contract?: NameCard | null,
   account?: Account | null
 ) => {
-  const { data } = useQuery(
+  const query = useQuery(
     ["cards", account?.id],
     () => (contract as NameCard).createrURI(account?.id as string),
     { enabled: Boolean(account && contract), refetchOnWindowFocus: false }
   );
-  return data;
+  return query;
 };
 
 export const useFetchNFTs = (uris: string[]) => {
