@@ -3,8 +3,24 @@ import NextLink from "next/link";
 import { AiOutlineHome, AiOutlineScan, AiOutlineWallet } from "react-icons/ai";
 import { BsPencil } from "react-icons/bs";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { createWebStoragePersistor } from "react-query/createWebStoragePersistor-experimental";
+import { persistQueryClient } from "react-query/persistQueryClient-experimental";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: 1000 * 60 * 60 * 24,
+    },
+  },
+});
+
+typeof window === "object" &&
+  void persistQueryClient({
+    queryClient,
+    persistor: createWebStoragePersistor({
+      storage: window.localStorage,
+    }),
+  });
 
 const DefaultProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

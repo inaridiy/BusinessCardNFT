@@ -9,6 +9,11 @@ export const fetchIpfs = async (ipfs: string) => {
   return meta;
 };
 
+export const getCardImage = (meta: CardMeta) => {
+  const searchParams = new URLSearchParams(Object.entries(meta));
+  return `/api/ss?${searchParams.toString()}`;
+};
+
 export const getPoap = async (address: string) => {
   const res = await fetch(
     `https://api.poap.xyz/actions/scan/${String(address)}`

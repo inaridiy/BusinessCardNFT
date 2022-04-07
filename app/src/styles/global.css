@@ -22,7 +22,7 @@ body,
 }
 
 .markdown {
-  @apply text-base-content text-sm;
+  @apply text-base-content;
 }
 
 .markdown h1 {
