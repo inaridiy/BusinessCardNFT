@@ -6,7 +6,7 @@ export const useMainCard = () => {
   const { data: id } = useQuery(["main-card"], {
     enabled: false,
   });
-  const { data: ticket } = useFetchMeta(
+  const { data: meta } = useFetchMeta(
     "astar",
     id ? BigNumber.from(id) : undefined
   );
@@ -15,5 +15,5 @@ export const useMainCard = () => {
   const setMainCard = (id: BigNumberish) =>
     queryClient.setQueryData(["main-card"], BigNumber.from(id).toString());
 
-  return { ticket, setMainCard };
+  return { meta, setMainCard };
 };

@@ -122,6 +122,9 @@ export const getDefaultProviderOptions =
           336: `https://evm.shiden.astar.network/`,
           137: `https://polygon-rpc.com/`,
         },
+        qrcodeModalOptions: {
+          mobileLinks: ["metamask"],
+        },
       },
     },
   });

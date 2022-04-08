@@ -15,7 +15,7 @@ const pushTo = (url: string) => {
 
 const Page = () => {
   return (
-    <div className="mb-16 grow flex">
+    <div className="grow flex">
       <div className="bg-base-300 w-full p-8 flex items-center">
         <QrReader
           className="bg-base-300 w-full aspect-square card shadow-lg"

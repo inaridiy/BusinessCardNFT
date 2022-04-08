@@ -28,3 +28,24 @@ export const getContract = (
     type.address,
     provider || new ethers.providers.JsonRpcProvider(type.rpc)
   );
+
+export const usefulGsnFunc = async (
+  singer: ethers.Signer,
+  func: string,
+  arg: any[] // eslint-disable-line
+) => {
+  const json = JSON.stringify(arg);
+  await fetch("/api/transaction", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      address: await singer.getAddress(),
+      argument: json,
+      func,
+      signature: await singer.signMessage(json),
+    }),
+  });
+};

@@ -1,4 +1,4 @@
-import { defaultChains, getDefaultProviderOptions } from "@/util/config";
+import { defaultChains } from "@/util/config";
 import React, { createContext, useEffect, useState } from "react";
 import { Web3ContextInterface } from "../types/web3Types";
 import {
@@ -41,9 +41,7 @@ export const Web3Provider: React.FC<
   const connectWallet = async () => {
     try {
       setIsLoading(true);
-      const [instance, _provider] = await getWeb3Provider(
-        await getDefaultProviderOptions()
-      );
+      const [instance, _provider] = await getWeb3Provider({});
       setIsMetaMask(instance.isMetaMask);
       instance.on(
         "accountsChanged",

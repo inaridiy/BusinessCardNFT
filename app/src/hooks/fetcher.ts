@@ -68,6 +68,22 @@ export const useCreatorIds = (type: contractTypes) => {
   } as UseQueryResult<BigNumber[], never>;
 };
 
+export const useHavingIds = (type: contractTypes) => {
+  const { account, isLoading } = useWeb3();
+  const contract = useContract(type, { fetchOnly: true });
+  const query = useQuery(
+    ["cards", type, account?.id],
+    () => (contract as NameCard).havingIds(account?.id as string),
+    { enabled: Boolean(account && contract), refetchOnWindowFocus: false }
+  );
+
+  return {
+    ...query,
+    data: query.data?.map((v) => BigNumber.from(v)),
+    isLoading: isLoading || query.isLoading,
+  } as UseQueryResult<BigNumber[], never>;
+};
+
 export const useCardBalance = (type: contractTypes, id?: BigNumberish) => {
   const { account, isLoading } = useWeb3();
   const contract = useContract(type, { fetchOnly: true });

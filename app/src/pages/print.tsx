@@ -10,14 +10,18 @@ import {
 import { UsefulButton } from "@/components/UsefulBtn";
 import { useContract, useInputs, useWeb3 } from "@/hooks";
 import { nanoid } from "nanoid";
+import NextLink from "next/link";
 import { useEffect, useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import _QRCode, { QRCodeProps } from "react-qr-code";
 import invariant from "tiny-invariant";
+const QRCode = _QRCode as unknown as React.FC<QRCodeProps>;
 
 export default function Page() {
   const [status, setStatus] = useState("");
   const [step, setStep] = useState(0);
   const [error, setError] = useState("");
+  const [isCopied, setIsCopied] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
   const [isEditable, setEditable] = useState(false);
   const [isTransferable, setTransferable] = useState(false);
@@ -40,9 +44,13 @@ export default function Page() {
     setter: ticketSetter,
   } = useInputs({
     effectiveTime: "7",
-    amount: "10",
+    amount: "100",
     ticket: "",
   });
+
+  const url = `https://business-card-nft.vercel.app/receive?ticket=${
+    status || ""
+  }`;
 
   const mint = async () => {
     try {
@@ -95,12 +103,18 @@ export default function Page() {
         );
         await tx.wait();
         ticketSetter("ticket")(ticket);
-        setStatus(`ticket is ${ticket}`);
+        setStatus(ticket);
+        setStep(3);
       }
     } catch (e) {
       const err = e as { message?: string };
       setError(err.message ? String(err.message) : String(e));
     }
+  };
+  const copyUrl = () => {
+    void navigator.clipboard.writeText(url);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 1000);
   };
 
   useEffect(() => {
@@ -160,6 +174,25 @@ export default function Page() {
             >
               Create Ticket
             </UsefulButton>
+          </div>
+        </div>
+      </ModalBase>
+      <ModalBase open={Boolean(status && step === 3)} mode="auto">
+        <div className="modal-box flex flex-col items-center">
+          <h2 className="text-3xl font-bold">{status}</h2>
+          <QRCode value={url} size={128} />
+          <div
+            className="tooltip  tooltip-bottom"
+            data-tip={isCopied ? "Copied!!" : "Click to Copy"}
+          >
+            <button className="btn btn-ghost" onClick={copyUrl}>
+              {url}
+            </button>
+          </div>
+          <div className="modal-action">
+            <NextLink href="/manage">
+              <a className="btn">Back Home</a>
+            </NextLink>
           </div>
         </div>
       </ModalBase>

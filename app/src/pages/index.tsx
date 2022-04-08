@@ -5,13 +5,14 @@ import { useMainCard } from "@/hooks/useMainCard";
 import { useRouter } from "next/router";
 
 const Page = () => {
-  const { ticket } = useMainCard();
+  const { meta } = useMainCard();
   const router = useRouter();
   const movePrint = () => void router.push("/print");
+
   return (
-    <div className="flex justify-center mb-16 items-center grow">
-      {ticket ? (
-        <Card {...ticket} />
+    <div className="flex justify-center items-center grow">
+      {meta ? (
+        <Card {...meta} />
       ) : (
         <UsefulButton className="btn" onClick={movePrint}>
           Create Meishi
