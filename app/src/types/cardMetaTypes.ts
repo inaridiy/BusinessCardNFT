@@ -1,3 +1,5 @@
+import { BigNumber } from "ethers";
+
 export interface Media {
   github?: string;
   twitter?: string;
@@ -30,6 +32,14 @@ export interface CardStandardMete {
   description: string;
   attributes: Attributes[];
   animation_url: string;
+}
+
+export interface TicketMeta {
+  ticket: string;
+  amount: BigNumber;
+  effectiveAt: BigNumber;
+  infinite: boolean;
+  tokenId: BigNumber;
 }
 
 export interface Attributes {

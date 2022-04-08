@@ -1,28 +1,75 @@
+import { TicketMeta } from "@/types/cardMetaTypes";
 import { signMessage } from "@/util";
 import { fetchIpfs, getTokenUri } from "@/util/cardUtil";
 import { contractTypes } from "@/util/config";
 import { NameCard } from "@/util/contract";
 import { BigNumber, BigNumberish } from "ethers";
+import { useState } from "react";
 import { useQuery, useQueryClient, UseQueryResult } from "react-query";
 import { useContract } from "./useContract";
 import { useWeb3 } from "./useWeb3";
 
 export const useTickets = (type: contractTypes) => {
-  const { account, isLoading, provider } = useWeb3();
+  const { account, provider } = useWeb3();
+  const [error, setError] = useState("");
+  const { data: tickets } = useQuery(["tickets", type, account?.id], {
+    enabled: false,
+    initialData: [],
+  });
+  const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
   const contract = useContract(type, { fetchOnly: true });
   const getTicket = async () => {
-    if (provider) {
-      const signature =
-        queryClient.getQueryData("ticket-signature") ||
-        queryClient.setQueryData(
-          "ticket-signature",
-          await signMessage(provider?.getSigner(), "ticket-sign")
+    try {
+      if (provider && account && contract) {
+        setIsLoading(true);
+        const signature =
+          queryClient.getQueryData("ticket-signature") ||
+          queryClient.setQueryData(
+            "ticket-signature",
+            await signMessage(provider?.getSigner(), "ticket-sign")
+          );
+        const ticketStrings = await queryClient.fetchQuery(
+          ["ticketStrings", type, account.id],
+          () =>
+            contract.ownerTicket("ticket-sign", signature as string, account.id)
         );
-      console.log(signature);
+        const tickets = (
+          await Promise.all(
+            ticketStrings.map((ticketString) =>
+              queryClient.fetchQuery(["ticket", type, ticketString], () =>
+                contract.ticket(ticketString)
+              )
+            )
+          )
+        ).map((data, i) => ({
+          ticket: ticketStrings[i],
+          ...data,
+        })) as TicketMeta[];
+
+        queryClient.setQueryData(["tickets", type, account.id], tickets);
+      }
+    } catch (e) {
+      const err = e as { message?: string };
+      setError(err.message ? String(err.message) : String(e));
+    } finally {
+      setIsLoading(false);
     }
   };
-  return { getTicket };
+  return {
+    getTicket,
+    isLoading,
+    error,
+    tickets: tickets?.map(
+      ({ amount, effectiveAt, infinite, tokenId, ticket }, i) => ({
+        ticket,
+        amount: BigNumber.from(amount),
+        effectiveAt: BigNumber.from(effectiveAt),
+        infinite,
+        tokenId: BigNumber.from(tokenId),
+      })
+    ) as TicketMeta[],
+  };
 };
 
 export const useCreatorIds = (type: contractTypes) => {
