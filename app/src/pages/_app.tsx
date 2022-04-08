@@ -13,8 +13,9 @@ type AppPropsWithLayout = AppProps & {
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
+  const Magic = Component as React.FC<typeof pageProps>;
 
-  return getLayout(<Component {...pageProps} />);
+  return getLayout(<Magic {...pageProps} />);
 }
 
 export default MyApp;
