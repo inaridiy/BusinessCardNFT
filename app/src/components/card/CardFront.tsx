@@ -1,5 +1,6 @@
 import { CardMeta } from "@/types/cardMetaTypes";
 import { markdownToHtml } from "@/util/cardUtil";
+import { memo } from "react";
 import { BsGithub, BsTwitter } from "react-icons/bs";
 import { useQuery } from "react-query";
 import { CyberConnectIcon } from "../ui/CyberConnect";
@@ -60,4 +61,4 @@ const CardFront: React.FC<CardMeta> = ({
   );
 };
 
-export default CardFront;
+export default memo(CardFront);

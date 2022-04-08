@@ -45,10 +45,10 @@ export interface NameCardInterface extends utils.Interface {
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
     "burnTicket(string)": FunctionFragment;
     "createTicket(uint256,string,uint256,uint64,bool)": FunctionFragment;
-    "createrURI(address)": FunctionFragment;
+    "createrIds(address)": FunctionFragment;
     "edit(uint256,string,bytes)": FunctionFragment;
     "exists(uint256)": FunctionFragment;
-    "havingURI(address)": FunctionFragment;
+    "havingIds(address)": FunctionFragment;
     "initialize(string,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
@@ -77,7 +77,7 @@ export interface NameCardInterface extends utils.Interface {
     functionFragment: "createTicket",
     values: [BigNumberish, string, BigNumberish, BigNumberish, boolean]
   ): string;
-  encodeFunctionData(functionFragment: "createrURI", values: [string]): string;
+  encodeFunctionData(functionFragment: "createrIds", values: [string]): string;
   encodeFunctionData(
     functionFragment: "edit",
     values: [BigNumberish, string, BytesLike]
@@ -86,7 +86,7 @@ export interface NameCardInterface extends utils.Interface {
     functionFragment: "exists",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "havingURI", values: [string]): string;
+  encodeFunctionData(functionFragment: "havingIds", values: [string]): string;
   encodeFunctionData(
     functionFragment: "initialize",
     values: [string, string]
@@ -138,10 +138,10 @@ export interface NameCardInterface extends utils.Interface {
     functionFragment: "createTicket",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "createrURI", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "createrIds", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "edit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "exists", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "havingURI", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "havingIds", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
@@ -287,10 +287,10 @@ export interface NameCard extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    createrURI(
+    createrIds(
       creater_: string,
       overrides?: CallOverrides
-    ): Promise<[string[]]>;
+    ): Promise<[BigNumber[]]>;
 
     edit(
       id_: BigNumberish,
@@ -301,7 +301,10 @@ export interface NameCard extends BaseContract {
 
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
 
-    havingURI(owner_: string, overrides?: CallOverrides): Promise<[string[]]>;
+    havingIds(
+      owner_: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
 
     initialize(
       name_: string,
@@ -406,7 +409,7 @@ export interface NameCard extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  createrURI(creater_: string, overrides?: CallOverrides): Promise<string[]>;
+  createrIds(creater_: string, overrides?: CallOverrides): Promise<BigNumber[]>;
 
   edit(
     id_: BigNumberish,
@@ -417,7 +420,7 @@ export interface NameCard extends BaseContract {
 
   exists(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
-  havingURI(owner_: string, overrides?: CallOverrides): Promise<string[]>;
+  havingIds(owner_: string, overrides?: CallOverrides): Promise<BigNumber[]>;
 
   initialize(
     name_: string,
@@ -516,7 +519,10 @@ export interface NameCard extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    createrURI(creater_: string, overrides?: CallOverrides): Promise<string[]>;
+    createrIds(
+      creater_: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
 
     edit(
       id_: BigNumberish,
@@ -527,7 +533,7 @@ export interface NameCard extends BaseContract {
 
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
-    havingURI(owner_: string, overrides?: CallOverrides): Promise<string[]>;
+    havingIds(owner_: string, overrides?: CallOverrides): Promise<BigNumber[]>;
 
     initialize(
       name_: string,
@@ -679,7 +685,7 @@ export interface NameCard extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    createrURI(creater_: string, overrides?: CallOverrides): Promise<BigNumber>;
+    createrIds(creater_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     edit(
       id_: BigNumberish,
@@ -690,7 +696,7 @@ export interface NameCard extends BaseContract {
 
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    havingURI(owner_: string, overrides?: CallOverrides): Promise<BigNumber>;
+    havingIds(owner_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
       name_: string,
@@ -793,7 +799,7 @@ export interface NameCard extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    createrURI(
+    createrIds(
       creater_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -810,7 +816,7 @@ export interface NameCard extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    havingURI(
+    havingIds(
       owner_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

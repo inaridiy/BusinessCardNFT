@@ -1,7 +1,7 @@
 import { CardMeta } from "@/types/cardMetaTypes";
 import { stopPropagation } from "@/util";
 import { getPoap } from "@/util/cardUtil";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import CardBack from "./CardBack";
 import CardFront from "./CardFront";
@@ -86,4 +86,4 @@ const Card: React.FC<CardMeta> = (meta) => {
   );
 };
 
-export default Card;
+export default memo(Card);

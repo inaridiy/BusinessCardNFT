@@ -1,4 +1,5 @@
 import { Poap } from "@/types/cardMetaTypes";
+import { memo } from "react";
 import PoapView from "./PoapView";
 
 const CardBack: React.FC<{ name?: string; poaps?: Poap[] }> = ({
@@ -25,4 +26,4 @@ const CardBack: React.FC<{ name?: string; poaps?: Poap[] }> = ({
   );
 };
 
-export default CardBack;
+export default memo(CardBack);

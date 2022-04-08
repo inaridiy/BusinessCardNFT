@@ -1,5 +1,6 @@
 import { Web3Provider } from "@/components/Web3Provider";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { AiOutlineHome, AiOutlineScan, AiOutlineWallet } from "react-icons/ai";
 import { BsPencil } from "react-icons/bs";
@@ -68,19 +69,34 @@ export const Header: React.FC = () => {
   );
 };
 
+export const LinkIcon: React.FC<{
+  href: string;
+  children: React.ReactNode;
+}> = ({ href, children }) => {
+  const router = useRouter();
+
+  return (
+    <div
+      className={`h-full flex items-center border-neutral ${
+        router.route === href ? "border-b-4" : ""
+      }`}
+    >
+      <NextLink href={href}>
+        <a className="btn btn-ghost">{children}</a>
+      </NextLink>
+    </div>
+  );
+};
+
 export const MobileBar: React.FC<{ children?: React.ReactNode }> = () => {
   return (
-    <nav className="navbar bg-base-100 h-16 fixed w-full bottom-0 justify-center sm:hidden">
-      <NextLink href="/">
-        <a className="btn btn-ghost flex flex-col">
-          <AiOutlineHome size="2rem" />
-        </a>
-      </NextLink>
-      <NextLink href="/manage">
-        <a className="btn btn-ghost flex-col">
-          <BsPencil size="2rem" />
-        </a>
-      </NextLink>
+    <nav className="bg-base-100 h-16 fixed w-full bottom-0 flex items-center justify-center sm:hidden z-20">
+      <LinkIcon href="/">
+        <AiOutlineHome size="2rem" />
+      </LinkIcon>
+      <LinkIcon href="/manage">
+        <BsPencil size="2rem" />
+      </LinkIcon>
       <a className="btn btn-ghost flex-col">
         <AiOutlineWallet size="2rem" />
       </a>

@@ -1,10 +1,9 @@
+import { getContract } from "@/util";
 import { contractList, contractTypes } from "@/util/config";
-import { NameCard, NameCard__factory } from "@/util/contract";
+import { NameCard } from "@/util/contract";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useWeb3 } from "./useWeb3";
-
-type valueOf<T> = T[keyof T];
 
 type option = Partial<{
   fetchOnly: boolean;
@@ -19,15 +18,6 @@ type useContract = (
   type: keyof typeof contractList,
   opt?: option
 ) => NameCard | null;
-
-const getContract = (
-  type: valueOf<typeof contractList>,
-  provider?: ethers.providers.Provider | ethers.Signer
-) =>
-  NameCard__factory.connect(
-    type.address,
-    provider || new ethers.providers.JsonRpcProvider(type.rpc)
-  );
 
 export const useContract: useContract = (
   type,

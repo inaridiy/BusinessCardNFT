@@ -167,10 +167,10 @@ contract NameCard is ERC1155SupplyUpgradeable {
         delete tickets[ticket_];
     }
 
-    function createrURI(address creater_)
+    function createrIds(address creater_)
         public
         view
-        returns (string[] memory)
+        returns (uint256[] memory)
     {
         uint256 uriCount;
         for (uint256 i = 1; i <= _tokenIds.current(); i++) {
@@ -178,33 +178,33 @@ contract NameCard is ERC1155SupplyUpgradeable {
                 uriCount++;
             }
         }
-        string[] memory uris = new string[](uriCount);
+        uint256[] memory ids = new uint256[](uriCount);
         uint256 hitUriCount;
         for (uint256 i = 1; i <= _tokenIds.current(); i++) {
             if (cardMetaMap[i].author == creater_) {
-                uris[hitUriCount] = cardMetaMap[i].uri;
+                ids[hitUriCount] = i;
                 hitUriCount++;
             }
         }
-        return uris;
+        return ids;
     }
 
-    function havingURI(address owner_) public view returns (string[] memory) {
+    function havingIds(address owner_) public view returns (uint256[] memory) {
         uint256 uriCount;
         for (uint256 i = 1; i <= _tokenIds.current(); i++) {
             if (balanceOf(owner_, i) > 0) {
                 uriCount++;
             }
         }
-        string[] memory uris = new string[](uriCount);
+        uint256[] memory ids = new uint256[](uriCount);
         uint256 hitUriCount;
         for (uint256 i = 1; i <= _tokenIds.current(); i++) {
             if (balanceOf(owner_, i) > 0) {
-                uris[hitUriCount] = cardMetaMap[i].uri;
+                ids[hitUriCount] = i;
                 hitUriCount++;
             }
         }
-        return uris;
+        return ids;
     }
 
     function uri(uint256 _id) public view override returns (string memory) {

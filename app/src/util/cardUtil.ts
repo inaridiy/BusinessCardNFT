@@ -1,5 +1,8 @@
 import { CardMeta, CardStandardMete, Poap } from "@/types/cardMetaTypes";
+import { BigNumber } from "ethers";
 import invariant from "tiny-invariant";
+import { getContract } from ".";
+import { contractList, contractTypes } from "./config";
 
 export const fetchIpfs = async (ipfs: string) => {
   const res = await fetch(
@@ -7,6 +10,11 @@ export const fetchIpfs = async (ipfs: string) => {
   );
   const meta = convertStandardToMeta((await res.json()) as CardStandardMete);
   return meta;
+};
+
+export const getTokenUri = (type: contractTypes, id: BigNumber) => {
+  const contract = getContract(contractList[type]);
+  return contract.uri(id);
 };
 
 export const getCardImage = (meta: CardMeta) => {
