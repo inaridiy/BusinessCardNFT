@@ -31,7 +31,7 @@ export interface CardStandardMete {
   external_url: string;
   description: string;
   attributes: Attributes[];
-  animation_url: string;
+  animation_url?: string;
 }
 
 export interface TicketMeta {

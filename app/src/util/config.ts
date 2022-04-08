@@ -116,6 +116,11 @@ export const getDefaultProviderOptions =
           1: `https://mainnet.infura.io/v3/${
             process.env.NEXT_PUBLIC_INFURA_PROJECT_ID || ""
           }`,
+          80001: `https://rpc-mumbai.matic.today`,
+          81: `https://rpc.shibuya.astar.network:8545`,
+          592: `https://rpc.astar.network:8545`,
+          336: `https://evm.shiden.astar.network/`,
+          137: `https://polygon-rpc.com/`,
         },
       },
     },

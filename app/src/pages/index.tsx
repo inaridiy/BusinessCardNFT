@@ -1,16 +1,22 @@
 import Card from "@/components/card";
 import DefaultLayoutWithProvider from "@/components/DefaultLayout";
+import { UsefulButton } from "@/components/UsefulBtn";
+import { useMainCard } from "@/hooks/useMainCard";
+import { useRouter } from "next/router";
 
 const Page = () => {
+  const { ticket } = useMainCard();
+  const router = useRouter();
+  const movePrint = () => void router.push("/print");
   return (
     <div className="flex justify-center mb-16 items-center grow">
-      <Card
-        address="0x4aCc9c9eaFF1cf0e599dCb7a7164Cf2328224ca2"
-        name="inaridiy.eth"
-        theme="light"
-        icon="https://lh3.googleusercontent.com/nq68MZh2ZssfDMCvGL-iyx-3a4kXmU8jmtBO0vWgYAsPNiHxxWmoONT4dalD9cIAig_CxDMkvueN5GpDh2btDZkgTGZufONV8CJwzGk=w600"
-        github="https://github.dev/inaridiy/BusinessCardNFT/tree/oldproto"
-      />
+      {ticket ? (
+        <Card {...ticket} />
+      ) : (
+        <UsefulButton className="btn" onClick={movePrint}>
+          Create Meishi
+        </UsefulButton>
+      )}
     </div>
   );
 };

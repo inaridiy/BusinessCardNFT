@@ -1,8 +1,16 @@
-import { CardMeta, CardStandardMete, Poap } from "@/types/cardMetaTypes";
-import { BigNumber } from "ethers";
+import {
+  CardMeta,
+  CardStandardMete,
+  Poap,
+  TicketMeta,
+} from "@/types/cardMetaTypes";
+import { Account } from "@/types/web3Types";
+import { BigNumber, ethers } from "ethers";
+import { QueryClient } from "react-query";
 import invariant from "tiny-invariant";
-import { getContract } from ".";
+import { getContract, signMessage } from ".";
 import { contractList, contractTypes } from "./config";
+import { NameCard } from "./contract";
 
 export const fetchIpfs = async (ipfs: string) => {
   const res = await fetch(
@@ -47,7 +55,6 @@ export const convertToStandardMeta = (meta: CardMeta): CardStandardMete => {
     name: `${meta.name || "unknown"}'s Meishi`,
     description: meta.description || `${meta.name || "unknown"}'s Meishi`,
     external_url: `https://business-card-nft.vercel.app/meishi/${meta.address}`,
-    animation_url: `https://business-card-nft.vercel.app/card?${searchParams.toString()}`,
     attributes: Object.entries(meta).map(([key, value]) => ({
       trait_type: key,
       value: value ? String(value) : "",
@@ -59,4 +66,37 @@ export const markdownToHtml = async (markdown: string) => {
   const markdownIt = (await import("markdown-it")).default;
   const md = markdownIt({ linkify: true });
   return md.render(markdown);
+};
+
+export const getTicket = async (
+  type: string,
+  provider?: ethers.providers.Web3Provider | null,
+  account?: Account | null,
+  contract?: NameCard | null,
+  queryClient?: QueryClient | null
+) => {
+  invariant(provider && account && contract && queryClient);
+  const signature =
+    queryClient.getQueryData("ticket-signature") ||
+    queryClient.setQueryData(
+      "ticket-signature",
+      await signMessage(provider.getSigner(), "ticket-sign")
+    );
+  const ticketStrings = await queryClient.fetchQuery(
+    ["ticketStrings", type, account.id],
+    () => contract.ownerTicket("ticket-sign", signature as string, account.id)
+  );
+  const tickets = (
+    await Promise.all(
+      ticketStrings.map((ticketString) =>
+        queryClient.fetchQuery(["ticket", type, ticketString], () =>
+          contract.ticket(ticketString)
+        )
+      )
+    )
+  ).map((data, i) => ({
+    ticket: ticketStrings[i],
+    ...data,
+  })) as TicketMeta[];
+  return tickets;
 };

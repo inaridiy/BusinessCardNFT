@@ -42,18 +42,24 @@ contract NameCard is ERC1155SupplyUpgradeable {
         _signer = signer_;
     }
 
-    modifier _verify(
+    function _verify(
+        string memory uri_,
+        bytes memory signature_,
+        address singer_
+    ) public pure returns (bool) {
+        return
+            singer_ ==
+            keccak256(abi.encodePacked(uri_)).toEthSignedMessageHash().recover(
+                signature_
+            );
+    }
+
+    modifier verify(
         string memory uri_,
         bytes memory signature_,
         address singer_
     ) {
-        require(
-            singer_ ==
-                keccak256(abi.encodePacked(uri_))
-                    .toEthSignedMessageHash()
-                    .recover(signature_),
-            "Signature is incorrect."
-        );
+        require(_verify(uri_, signature_, singer_), "Signature is incorrect.");
         _;
     }
 
@@ -81,7 +87,7 @@ contract NameCard is ERC1155SupplyUpgradeable {
         bool isTransferable_,
         bool isEditable_,
         uint256 amount_
-    ) public _verify(uri_, signature_, _signer) {
+    ) public verify(uri_, signature_, _signer) {
         _print(msg.sender, uri_, isTransferable_, isEditable_, amount_);
     }
 
@@ -89,7 +95,7 @@ contract NameCard is ERC1155SupplyUpgradeable {
         uint256 id_,
         string memory uri_,
         bytes memory signature_
-    ) public _verify(uri_, signature_, msg.sender) {
+    ) public verify(uri_, signature_, msg.sender) {
         CardMeta storage cardMeta = cardMetaMap[id_];
         require(cardMeta.author == msg.sender, "It's not your card.");
         require(cardMeta.isEditable, "Editing is not permitted.");
@@ -109,7 +115,7 @@ contract NameCard is ERC1155SupplyUpgradeable {
         string memory txt,
         bytes memory signature_,
         address owner
-    ) public view _verify(txt, signature_, owner) returns (string[] memory) {
+    ) public view verify(txt, signature_, owner) returns (string[] memory) {
         return ticketsOwner[owner];
     }
 
@@ -131,7 +137,7 @@ contract NameCard is ERC1155SupplyUpgradeable {
         ticketsOwner[msg.sender].push(ticket_);
     }
 
-    function receiveCard(string memory ticket_) public {
+    function _receiveCard(address to_, string memory ticket_) public {
         TicketMeta storage ticketMeta = tickets[ticket_];
         require(ticketMeta.tokenId != 0, "Ticket does not exist.");
         require(
@@ -151,13 +157,16 @@ contract NameCard is ERC1155SupplyUpgradeable {
         }
         CardMeta memory cardMeta = cardMetaMap[ticketMeta.tokenId];
         ticketUsageHistory[ticket_][msg.sender] = true;
-        _safeTransferFrom(
-            cardMeta.author,
-            msg.sender,
-            ticketMeta.tokenId,
-            1,
-            ""
-        );
+        _safeTransferFrom(cardMeta.author, to_, ticketMeta.tokenId, 1, "");
+    }
+
+    function receiveCard(string memory ticket_) public {
+        _receiveCard(msg.sender, ticket_);
+    }
+
+    function receiveCardByOwner(address to_, string memory ticket_) public {
+        require(msg.sender == _signer);
+        _receiveCard(to_, ticket_);
     }
 
     function burnTicket(string memory ticket_) public {

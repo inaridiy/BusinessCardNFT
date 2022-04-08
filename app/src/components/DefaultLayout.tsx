@@ -100,9 +100,10 @@ export const MobileBar: React.FC<{ children?: React.ReactNode }> = () => {
       <a className="btn btn-ghost flex-col">
         <AiOutlineWallet size="2rem" />
       </a>
-      <a className="btn btn-ghost flex-col">
+
+      <LinkIcon href="/scan">
         <AiOutlineScan size="2rem" />
-      </a>
+      </LinkIcon>
     </nav>
   );
 };

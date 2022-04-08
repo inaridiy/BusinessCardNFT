@@ -29,7 +29,7 @@ export default function Page() {
     <>
       <div className="mb-24 container mx-auto max-w-screen-lg p-2">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {data?.map((id) => (
+          {data?.reverse().map((id) => (
             <CardAdminDetail key={id.toString()} tokenId={id} />
           ))}
         </div>

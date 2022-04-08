@@ -1,67 +1,30 @@
 import { TicketMeta } from "@/types/cardMetaTypes";
-import { signMessage } from "@/util";
-import { fetchIpfs, getTokenUri } from "@/util/cardUtil";
+import { fetchIpfs, getTicket, getTokenUri } from "@/util/cardUtil";
 import { contractTypes } from "@/util/config";
 import { NameCard } from "@/util/contract";
 import { BigNumber, BigNumberish } from "ethers";
-import { useState } from "react";
 import { useQuery, useQueryClient, UseQueryResult } from "react-query";
+import invariant from "tiny-invariant";
 import { useContract } from "./useContract";
 import { useWeb3 } from "./useWeb3";
 
 export const useTickets = (type: contractTypes) => {
   const { account, provider } = useWeb3();
-  const [error, setError] = useState("");
-  const { data: tickets } = useQuery(["tickets", type, account?.id], {
-    enabled: false,
-    initialData: [],
-  });
-  const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
   const contract = useContract(type, { fetchOnly: true });
-  const getTicket = async () => {
-    try {
-      if (provider && account && contract) {
-        setIsLoading(true);
-        const signature =
-          queryClient.getQueryData("ticket-signature") ||
-          queryClient.setQueryData(
-            "ticket-signature",
-            await signMessage(provider?.getSigner(), "ticket-sign")
-          );
-        const ticketStrings = await queryClient.fetchQuery(
-          ["ticketStrings", type, account.id],
-          () =>
-            contract.ownerTicket("ticket-sign", signature as string, account.id)
-        );
-        const tickets = (
-          await Promise.all(
-            ticketStrings.map((ticketString) =>
-              queryClient.fetchQuery(["ticket", type, ticketString], () =>
-                contract.ticket(ticketString)
-              )
-            )
-          )
-        ).map((data, i) => ({
-          ticket: ticketStrings[i],
-          ...data,
-        })) as TicketMeta[];
-
-        queryClient.setQueryData(["tickets", type, account.id], tickets);
-      }
-    } catch (e) {
-      const err = e as { message?: string };
-      setError(err.message ? String(err.message) : String(e));
-    } finally {
-      setIsLoading(false);
+  const query = useQuery(
+    ["tickets", type, account?.id],
+    () => getTicket(type, provider, account, contract, queryClient),
+    {
+      enabled: Boolean(provider && account && contract && queryClient),
+      initialData: [],
     }
-  };
+  );
+
   return {
-    getTicket,
-    isLoading,
-    error,
-    tickets: tickets?.map(
-      ({ amount, effectiveAt, infinite, tokenId, ticket }, i) => ({
+    ...query,
+    tickets: query.data?.map(
+      ({ amount, effectiveAt, infinite, tokenId, ticket }) => ({
         ticket,
         amount: BigNumber.from(amount),
         effectiveAt: BigNumber.from(effectiveAt),
@@ -70,6 +33,23 @@ export const useTickets = (type: contractTypes) => {
       })
     ) as TicketMeta[],
   };
+};
+
+export const useCardByTicket = (type: contractTypes, ticket: string) => {
+  const contract = useContract(type, { fetchOnly: true });
+  const query = useQuery(
+    ["cardByTicket", type, ticket],
+    async () => {
+      invariant(contract);
+      return await fetchIpfs(
+        await getTokenUri(type, (await contract.ticket(ticket)).tokenId)
+      );
+    },
+    {
+      enabled: Boolean(contract),
+    }
+  );
+  return query;
 };
 
 export const useCreatorIds = (type: contractTypes) => {

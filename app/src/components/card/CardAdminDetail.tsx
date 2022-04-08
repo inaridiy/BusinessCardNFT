@@ -1,38 +1,25 @@
 import Card from "@/components/card";
 import { useFetchMeta, useTickets } from "@/hooks/fetcher";
-import { TicketMeta } from "@/types/cardMetaTypes";
+import { useMainCard } from "@/hooks/useMainCard";
 import { stopPropagation } from "@/util";
 import { getCardImage } from "@/util/cardUtil";
+import { selectFirst } from "@/util/web3Util";
 import { BigNumber } from "ethers";
 import { memo, useState } from "react";
-import { AiOutlinePlus } from "react-icons/ai";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import ModalBase from "../ModalBase";
-
-const TicketDetail: React.FC<{ ticket: TicketMeta }> = memo(
-  function _TicketDetail({ ticket }) {
-    return (
-      <div className="card shadow-2xl bg-neutral text-neutral-content">
-        <div className="card-body">
-          <div className="text-xl font-bold">{ticket.ticket}</div>
-        </div>
-      </div>
-    );
-  }
-);
 
 const CardAdminDetail: React.FC<{
   tokenId: BigNumber;
 }> = ({ tokenId: id }) => {
   const [openView, setOpenView] = useState(false);
   const [ticketView, setTicketView] = useState(false);
+  const [optionView, setOptionView] = useState(false);
   const query = useFetchMeta("astar", id);
-  const { getTicket, tickets } = useTickets("astar");
-  const openTicketView = () => {
-    setTicketView(true);
-    void getTicket();
-  };
-  console.log(id.toString());
-
+  const { tickets } = useTickets("astar");
+  const ticket = selectFirst(tickets.filter((e) => e.tokenId.eq(id)));
+  const { setMainCard } = useMainCard();
+  ticket && console.log(ticket);
   return (
     <>
       <ModalBase open={openView} onChange={setOpenView}>
@@ -41,19 +28,26 @@ const CardAdminDetail: React.FC<{
         </div>
       </ModalBase>
       <ModalBase open={ticketView} onChange={setTicketView} mode="auto">
-        <div className="modal-box p-4" onClick={stopPropagation}>
-          <div className="modal-action items-center justify-between">
-            <h2 className="text-2xl font-bold">Meishi Tickets</h2>
-            <button className="btn">
-              New Ticket
-              <AiOutlinePlus size="1.5rem" />
-            </button>
-          </div>
-          <div className="grid grid-cols-2 mt-2">
-            {tickets.map((ticket) => (
-              <TicketDetail key={ticket.ticket} ticket={ticket} />
-            ))}
-          </div>
+        <div className="modal-box" onClick={stopPropagation}></div>
+      </ModalBase>
+      <ModalBase open={optionView} onChange={setOptionView} mode="auto">
+        <div
+          className="modal-box flex-col flex gap-1"
+          onClick={stopPropagation}
+          data-theme={query.data?.theme || "light"}
+        >
+          <button
+            className="btn w-full btn-primary"
+            onClick={() => void setMainCard(id)}
+          >
+            Set to Main Card
+          </button>
+          <button
+            className="btn w-full btn-outline btn-error"
+            onClick={() => setOptionView(false)}
+          >
+            Close
+          </button>
         </div>
       </ModalBase>
       <div
@@ -76,16 +70,16 @@ const CardAdminDetail: React.FC<{
         <div className="flex">
           <button
             className="btn btn-secondary rounded-none grow"
-            onClick={openTicketView}
+            onClick={() => setTicketView(true)}
           >
             Ticket
           </button>
-          {/* <button
-            className="btn btn-primary rounded-none grow"
-            onClick={() => setInfoView(true)}
+          <button
+            className="btn btn-primary rounded-none btn-square"
+            onClick={() => setOptionView(true)}
           >
-            Edit
-          </button> */}
+            <BsThreeDotsVertical size="1.5rem" />
+          </button>
         </div>
       </div>
     </>
