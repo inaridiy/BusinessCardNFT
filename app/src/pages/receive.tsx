@@ -5,6 +5,7 @@ import { UsefulButton } from "@/components/UsefulBtn";
 import { useContract } from "@/hooks";
 import { useCardByTicket } from "@/hooks/fetcher";
 import { getCardImage } from "@/util/cardUtil";
+import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
@@ -36,6 +37,18 @@ const Page = () => {
   };
   return (
     <>
+      <NextSeo
+        title={`${query.data?.name || "unknown"}'s Meishi Receive Page.`}
+        openGraph={{
+          images: [
+            {
+              url: `https://business-card-nft.vercel.app/${getCardImage(
+                query.data || {}
+              )}`,
+            },
+          ],
+        }}
+      />
       <ModalBase open={openView} onChange={setIsOpenView}>
         <div className="scale-75 sm:scale-110">
           <Card {...query.data} />

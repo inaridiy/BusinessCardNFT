@@ -40,7 +40,7 @@ const DefaultLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <div className="min-h-full bg-base-200 text-base-content flex flex-col transition-all pb-16 sm:pb-0 pt-0 sm:pt-32">
+    <div className="min-h-full bg-base-200 text-base-content flex flex-col transition-all pb-16 sm:pb-0 pt-0 sm:pt-16">
       <PcHeader />
       {children}
       <MobileBar />
