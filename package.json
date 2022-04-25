@@ -1,0 +1,17 @@
+{
+  "name": "namecard-nft",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/inaridiy/BusinessCardNFT.git",
+  "author": "inaridiy <inainainariinainari@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "yarn workspace app dev"
+  },
+  "workspaces": {
+    "packages": [
+      "projects/*"
+    ]
+  }
+}
