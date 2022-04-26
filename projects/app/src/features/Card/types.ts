@@ -5,3 +5,8 @@ export interface Poap {
   chain: string;
   created: Date;
 }
+
+export interface CardMeta {
+  address: string;
+  theme?: string;
+}

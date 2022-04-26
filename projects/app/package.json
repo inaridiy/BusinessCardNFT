@@ -34,6 +34,7 @@
     "eslint-config-next": "^12.0.10",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-tailwindcss": "^3.5.0",
     "postcss": "^8.4.8",
     "tailwindcss": "^3.0.23",
     "typechain": "^7.0.1",
