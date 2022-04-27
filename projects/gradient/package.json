@@ -1,0 +1,30 @@
+{
+  "name": "@inaridiy/super-gradient",
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "module": "dist/index.es.js",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "files": [
+    "package.json",
+    "README.md",
+    "LICENSE",
+    "types",
+    "dist"
+  ],
+  "keywords": [
+    "front-end",
+    "vanillajs",
+    "typescript"
+  ],
+  "devDependencies": {},
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.2.1",
+    "@rollup/plugin-typescript": "^8.3.2",
+    "rollup": "^2.70.2"
+  }
+}
