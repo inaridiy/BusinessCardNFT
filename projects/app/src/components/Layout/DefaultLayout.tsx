@@ -42,11 +42,13 @@ const MobileBottomNav: React.VFC = () => {
           <AiOutlineBars size="2rem" className="fill-base-300" />
         </LinkIcon>
       </nav>
-      <div className="avatar online">
-        <div className="w-16 rounded-full ring ring-offset-2 shadow-2xl ring-primary ring-offset-base-100">
-          <Avatar />
-        </div>
-      </div>
+      <NextLink href="/profile">
+        <a className="avatar online">
+          <div className="w-14 rounded-full ring ring-offset-2 shadow-2xl ring-primary ring-offset-base-100">
+            <Avatar />
+          </div>
+        </a>
+      </NextLink>
     </div>
   );
 };
