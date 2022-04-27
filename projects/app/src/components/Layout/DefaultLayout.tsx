@@ -1,8 +1,8 @@
+import { Avatar } from "@/features/Avatar";
 import clsx from "clsx";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { AiOutlineBars, AiOutlineHome, AiOutlineWallet } from "react-icons/ai";
-import { BsPerson } from "react-icons/bs";
 
 const LinkIcon: React.FC<{
   href: string;
@@ -42,9 +42,11 @@ const MobileBottomNav: React.VFC = () => {
           <AiOutlineBars size="2rem" className="fill-base-300" />
         </LinkIcon>
       </nav>
-      <LinkIcon href="/profile" className="shadow-2xl btn-lg btn-primary">
-        <BsPerson size="2.5rem" className="fill-base-300" />
-      </LinkIcon>
+      <div className="avatar online">
+        <div className="w-16 rounded-full ring ring-offset-2 shadow-2xl ring-primary ring-offset-base-100">
+          <Avatar />
+        </div>
+      </div>
     </div>
   );
 };

@@ -20,11 +20,16 @@
     "vanillajs",
     "typescript"
   ],
-  "devDependencies": {},
-  "dependencies": {
+  "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.2.1",
     "@rollup/plugin-typescript": "^8.3.2",
+    "@types/color-hash": "^1.0.2",
+    "@types/crypto-js": "^4.1.1",
     "rollup": "^2.70.2"
+  },
+  "dependencies": {
+    "color-hash": "^2.0.1",
+    "crypto-js": "^4.1.1"
   }
 }

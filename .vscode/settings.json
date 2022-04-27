@@ -8,5 +8,8 @@
   "eslint.workingDirectories": ["./projects/app"],
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[xml]": {
+    "editor.defaultFormatter": "DotJoshJohnson.xml"
   }
 }
