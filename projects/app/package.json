@@ -13,6 +13,7 @@
     "@inaridiy/useful-web3": "^0.0.7",
     "@metamask/detect-provider": "^1.2.0",
     "@walletconnect/web3-provider": "^1.7.7",
+    "boring-avatars": "^1.6.3",
     "clsx": "^1.1.1",
     "daisyui": "^2.14.2",
     "ethers": "^5.5.4",

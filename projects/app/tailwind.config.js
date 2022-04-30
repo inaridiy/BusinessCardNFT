@@ -13,7 +13,7 @@ module.exports = {
         gold: "1 / 1.618",
       },
       boxShadow: {
-        menu: "0px 0px 10px 5px rgb(0 0 0 / 0.1), 0 5px 7px -4px rgb(0 0 0 / 0.1)",
+        menu: "0px 0px 10px 5px rgb(0 0 0 / 0.1)",
       },
     },
   },

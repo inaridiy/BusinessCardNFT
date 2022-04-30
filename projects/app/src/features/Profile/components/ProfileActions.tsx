@@ -1,3 +1,4 @@
+import { SimpleEaseIn } from "@/components/Transition";
 import { Menu } from "@headlessui/react";
 import clsx from "clsx";
 import { useRouter } from "next/router";
@@ -15,28 +16,40 @@ export const ProfileActions = () => {
         <Menu.Button className="btn btn-ghost btn-circle">
           <BsThreeDotsVertical size="1.5rem" />
         </Menu.Button>
-        <Menu.Items className="flex absolute right-0 z-10 mt-12 mr-4 focus:outline-none shadow-menu  bg-base-100 menu rounded-box">
-          <Menu.Item>
-            {({ active }) => (
-              <li>
-                <a className={clsx(active && "font-bold bg-primary")}>
-                  <BsPencilFill />
-                  Edit Profile
-                </a>
-              </li>
-            )}
-          </Menu.Item>
-          <Menu.Item>
-            {({ active }) => (
-              <li>
-                <a className={clsx(active && "font-bold bg-primary")}>
-                  <BsShareFill />
-                  Share
-                </a>
-              </li>
-            )}
-          </Menu.Item>
-        </Menu.Items>
+        <SimpleEaseIn>
+          <Menu.Items className="flex absolute right-0 z-10 mt-12 mr-4 rounded-lg focus:outline-none  shadow-menu bg-base-100 menu">
+            <Menu.Item>
+              {({ active }) => (
+                <li>
+                  <a
+                    className={clsx(
+                      active && "bg-primary text-primary-content",
+                      "font-bold"
+                    )}
+                  >
+                    <BsPencilFill />
+                    Edit Profile
+                  </a>
+                </li>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              {({ active }) => (
+                <li>
+                  <a
+                    className={clsx(
+                      active && "bg-primary text-primary-content",
+                      "font-bold"
+                    )}
+                  >
+                    <BsShareFill />
+                    Share
+                  </a>
+                </li>
+              )}
+            </Menu.Item>
+          </Menu.Items>
+        </SimpleEaseIn>
       </Menu>
     </div>
   );
