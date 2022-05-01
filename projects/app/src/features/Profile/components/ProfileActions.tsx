@@ -1,4 +1,5 @@
 import { SimpleEaseIn } from "@/components/Transition";
+import { useSetShareData } from "@/stores/modal";
 import { Menu } from "@headlessui/react";
 import clsx from "clsx";
 import { useRouter } from "next/router";
@@ -7,6 +8,8 @@ import { IoIosArrowBack } from "react-icons/io";
 
 export const ProfileActions = () => {
   const router = useRouter();
+  const setShare = useSetShareData();
+
   return (
     <div className="flex justify-between p-2 w-full bg-base-100">
       <button className="btn btn-ghost btn-circle" onClick={router.back}>
@@ -36,15 +39,22 @@ export const ProfileActions = () => {
             <Menu.Item>
               {({ active }) => (
                 <li>
-                  <a
+                  <button
                     className={clsx(
                       active && "bg-primary text-primary-content",
                       "font-bold"
                     )}
+                    onClick={() =>
+                      setShare({
+                        title: `Share User`,
+                        text: "Share 0x4aCc...ca2 With:",
+                        url: "http://localhost:3000/profile/0x4aCc9c9eaFF1cf0e599dCb7a7164Cf2328224ca2",
+                      })
+                    }
                   >
                     <BsShareFill />
                     Share
-                  </a>
+                  </button>
                 </li>
               )}
             </Menu.Item>

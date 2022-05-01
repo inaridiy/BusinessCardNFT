@@ -2,7 +2,7 @@ import Avatar from "boring-avatars";
 import clsx from "clsx";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { AiOutlineBars, AiOutlineHome, AiOutlineWallet } from "react-icons/ai";
+import { AiOutlineHome, AiOutlineMenu, AiOutlineWallet } from "react-icons/ai";
 
 const LinkIcon: React.FC<{
   href: string;
@@ -39,7 +39,7 @@ const MobileBottomNav: React.VFC = () => {
           <AiOutlineWallet size="2rem" className="fill-gray-100" />
         </LinkIcon>
         <LinkIcon href="/print">
-          <AiOutlineBars size="2rem" className="fill-gray-100" />
+          <AiOutlineMenu size="2rem" className="fill-gray-100" />
         </LinkIcon>
       </nav>
       <NextLink href="/profile/0x4aCc9c9eaFF1cf0e599dCb7a7164Cf2328224ca2">

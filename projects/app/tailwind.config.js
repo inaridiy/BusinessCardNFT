@@ -8,6 +8,8 @@ module.exports = {
       colors: {
         twitter: "#1DA1F2",
         github: "#000",
+        facebook: "#3B5998",
+        line: "#06c755",
       },
       aspectRatio: {
         gold: "1 / 1.618",
