@@ -14,25 +14,25 @@ export const ShareModal: React.VFC = () => {
       <div className="flex overflow-y-auto gap-6 justify-center">
         <div className="flex flex-col items-center">
           <button className="btn btn-circle">
-            <BsLink45Deg size="1.8rem" />
+            <BsLink45Deg size="1.8rem" className="fill-white" />
           </button>
           <div className="text-sm font-bold">Copy URL</div>
         </div>
         <div className="flex flex-col items-center">
           <button className="bg-twitter border-twitter btn btn-circle">
-            <BsTwitter size="1.8rem" />
+            <BsTwitter size="1.8rem" className="fill-white" />
           </button>
           <div className="text-sm font-bold">Twitter</div>
         </div>
         <div className="flex flex-col items-center">
           <button className="bg-facebook border-facebook btn btn-circle">
-            <FaFacebookF size="1.8rem" />
+            <FaFacebookF size="1.8rem" className="fill-white" />
           </button>
           <div className="text-sm font-bold">FaceBook</div>
         </div>
         <div className="flex flex-col items-center">
           <button className="pt-1 bg-line border-line -pb-2 btn btn-circle">
-            <BsLine size="1.8rem" />
+            <BsLine size="1.8rem" className="fill-white" />
           </button>
           <div className="text-sm font-bold">FaceBook</div>
         </div>
