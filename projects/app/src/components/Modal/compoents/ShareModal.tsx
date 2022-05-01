@@ -10,7 +10,7 @@ export const ShareModal: React.VFC = () => {
   return (
     <ModalBase open={Boolean(shareData)} onChange={onClose}>
       <h2 className="pl-2 text-2xl font-bold">{shareData?.title}</h2>
-      <div className="py-0 divider"></div>
+      <div className="my-1 mb-4 divider"></div>
       <div className="flex overflow-y-auto gap-6 justify-center">
         <div className="flex flex-col items-center">
           <button className="btn btn-circle">
@@ -37,6 +37,8 @@ export const ShareModal: React.VFC = () => {
           <div className="text-sm font-bold">FaceBook</div>
         </div>
       </div>
+      <div className="divider">OR</div>
+      <button className="w-full btn btn-outline">Other</button>
     </ModalBase>
   );
 };
