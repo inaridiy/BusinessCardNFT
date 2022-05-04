@@ -5,8 +5,9 @@ export const ModalBase: React.VFC<{
   children?: React.ReactNode;
   pos?: "auto" | "middle" | "bottom";
   open: boolean;
+  className?: string;
   onChange?: (open: boolean) => void;
-}> = ({ children, pos = "auto", open, onChange }) => {
+}> = ({ children, pos = "auto", open, onChange, className }) => {
   return (
     <div
       className={clsx(
@@ -18,7 +19,7 @@ export const ModalBase: React.VFC<{
       )}
       onClick={() => onChange && onChange(false)}
     >
-      <div className="modal-box" onClick={stopPropagation}>
+      <div className={className || "modal-box"} onClick={stopPropagation}>
         {children}
       </div>
     </div>

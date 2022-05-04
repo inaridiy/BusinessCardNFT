@@ -5,16 +5,20 @@ import clsx from "clsx";
 import { useRouter } from "next/router";
 import { BsPencilFill, BsShareFill, BsThreeDotsVertical } from "react-icons/bs";
 import { IoIosArrowBack } from "react-icons/io";
+import { useSetProfileEditModal } from "../store/profileData";
+import { ProfileEdit } from "./ProfileEdit";
 
 export const ProfileActions = () => {
   const router = useRouter();
   const setShare = useSetShareData();
+  const setEdit = useSetProfileEditModal();
 
   return (
     <div className="flex justify-between p-2 w-full bg-base-100">
       <button className="btn btn-ghost btn-circle" onClick={router.back}>
         <IoIosArrowBack size="1.5rem" />
       </button>
+      <ProfileEdit />
       <Menu>
         <Menu.Button className="btn btn-ghost btn-circle">
           <BsThreeDotsVertical size="1.5rem" />
@@ -24,15 +28,16 @@ export const ProfileActions = () => {
             <Menu.Item>
               {({ active }) => (
                 <li>
-                  <a
+                  <button
                     className={clsx(
                       active && "bg-primary text-primary-content",
                       "font-bold"
                     )}
+                    onClick={() => setEdit(true)}
                   >
                     <BsPencilFill />
                     Edit Profile
-                  </a>
+                  </button>
                 </li>
               )}
             </Menu.Item>
