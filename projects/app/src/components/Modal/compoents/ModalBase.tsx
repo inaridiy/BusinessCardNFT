@@ -17,6 +17,7 @@ export const ModalBase: React.VFC<{
         pos === "middle" && "modal-middle",
         pos === "bottom" && "modal-bottom"
       )}
+      style={{ touchAction: "none" }}
       onClick={() => onChange && onChange(false)}
     >
       <div className={className || "modal-box"} onClick={stopPropagation}>

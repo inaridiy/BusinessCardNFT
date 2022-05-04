@@ -12,19 +12,19 @@ export const ProfileEdit = () => {
   return (
     <ModalBase
       pos="auto"
-      className="relative max-h-full modal-box"
+      className="relative modal-box"
       open={open}
       onChange={setOpen}
     >
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Edit Profile</h2>
-        <button className="btn btn-primary">Save</button>
+        <button className="btn-sm btn btn-outline">Save</button>
       </div>
 
       <form>
-        <NameInput />
-        <TwitterInput />
-        <GithubInput />
+        <NameInput {...register("name")} />
+        <TwitterInput {...register("twitter")} />
+        <GithubInput {...register("github")} />
       </form>
     </ModalBase>
   );
