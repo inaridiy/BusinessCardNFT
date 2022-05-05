@@ -7,9 +7,10 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "yarn workspace app dev",
+    "app:dev": "yarn workspace app dev",
     "contract:test": "yarn workspace contract hardhat test",
-    "contract:compile": "yarn workspace contract hardhat compile"
+    "contract:compile": "yarn workspace contract hardhat compile",
+    "contract:deploy": "yarn workspace contract hardhat run scripts/deploy.ts"
   },
   "workspaces": {
     "packages": [
