@@ -8,7 +8,8 @@
   "private": true,
   "scripts": {
     "dev": "yarn workspace app dev",
-    "test:contract": "yarn workspace contract hardhat test"
+    "contract:test": "yarn workspace contract hardhat test",
+    "contract:compile": "yarn workspace contract hardhat compile"
   },
   "workspaces": {
     "packages": [
