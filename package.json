@@ -7,11 +7,15 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "yarn workspace app dev"
+    "dev": "yarn workspace app dev",
+    "test:contract": "yarn workspace contract hardhat test"
   },
   "workspaces": {
     "packages": [
       "projects/*"
     ]
+  },
+  "devDependencies": {
+    "ts-node": "^10.7.0"
   }
 }
